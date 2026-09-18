@@ -1,0 +1,17 @@
+# Core: everything except the three renderers and the montage experiment
+# runs on these four.
+numpy>=1.24
+scipy>=1.10
+networkx>=3.0
+matplotlib>=3.7
+
+# Off-screen surface rendering: make_cortex_figures_pv.py, make_sphere3d_pv.py,
+# make_optimal_figure.py
+pyvista>=0.43
+
+# Standard scalp montages: run_montages.py
+mne>=1.5
+
+# Versions this package was last run with, Python 3.11.15:
+#   numpy 2.4.4, scipy 1.17.1, networkx 3.6.1, matplotlib 3.10.9,
+#   pyvista 0.49.0, mne 1.13.2

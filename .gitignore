@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+logs/
+*.log
+
+# Raw geodesic distance caches. run_cortex.py writes both these and the
+# compressed .npz beside them; the .npz is what the repository carries, and
+# distcache.py reads whichever is present.
+results/cortex_dist_*.npy
+
+# LaTeX build products, if the manuscript is compiled inside this tree
+*.aux
+*.bbl
+*.blg
+*.out
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.toc
