@@ -90,7 +90,6 @@ figures/                the paper's nine figures, and the six off-screen
 legacy_v2/              the earlier brute-force pipeline, kept for provenance
 SCRIPTS.md              the full script map and reproduce sequence
 upload_kshadow.sh       one-shot push of this folder to GitHub, then a tag
-upload_kshadow.ps1      the same thing for Windows PowerShell
 ```
 
 ## The cortical surface
