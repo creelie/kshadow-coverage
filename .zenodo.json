@@ -1,9 +1,9 @@
 {
   "title": "Supplementary code for: Topological Certificates of Redundant Coverage for Cortical Electrode Arrays",
-  "description": "Python implementation of the k-shadow nerve theorem and every computation reported in the paper: exact nerves of disk and geodesic footprint families, k-shadow and subdivision complexes with GF(2) Betti numbers, the redundancy barcode, the discrete disk test, the cortical-surface benchmark on the FieldTrip colin27 template, and the optimal-coverage design search with its covering-radius and packing bounds, and the analysis of real contact failures on a 64-channel EEG cap (OpenNeuro ds003775) with an exact arrangement check of the certificate.",
+  "description": "Python implementation of the k-shadow certificate and every computation reported in the paper: exact nerves of disk and geodesic footprint families, k-shadow and subdivision complexes with GF(2) Betti numbers, the redundancy barcode, the cortical-surface benchmark on the FieldTrip colin27 template, the optimal-coverage design search, and the analysis of real contact failures on a 64-channel EEG cap (OpenNeuro ds003775 v1.2.1), with an exact arrangement check of the certificate. v1.4.0 adds the pre-specified signal-level test run on all 152 usable recordings (does redundancy predict how well a dropped channel is rebuilt?), exploratory analyses of what it can and cannot say about topology, a margin-preserving null and correlation length for spatially correlated contact failures, a repaired versioned download of the dataset, and the amsart manuscript with every number generated from the result files.",
   "upload_type": "software",
   "license": "MIT",
-  "version": "v1.3.0",
+  "version": "v1.4.0",
   "creators": [
     {
       "name": "Bose, Aditi",
@@ -12,16 +12,28 @@
     },
     {
       "name": "Bhattacharjee, Deep",
-      "orcid": "0000-0003-0466-750X"
+      "orcid": "0000-0003-0466-750X",
+      "affiliation": "Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha, India"
     },
     {
       "name": "Bhattacharya, Ushashi",
-      "orcid": "0009-0002-2254-3914"
+      "orcid": "0009-0002-2254-3914",
+      "affiliation": "Formerly, National Taiwan University, Taipei, Taiwan"
     }
   ],
   "keywords": [
     "nerve theorem",
     "persistent homology",
-    "electrode array coverage"
+    "electrode array coverage",
+    "EEG",
+    "contact failure",
+    "spherical spline interpolation"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.20944/preprints202606.1351.v2",
+      "relation": "references",
+      "scheme": "doi"
+    }
   ]
 }
