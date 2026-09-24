@@ -15,7 +15,7 @@ authors:
     orcid: "https://orcid.org/0009-0002-2254-3914"
 repository-code: "https://github.com/creelie/kshadow-coverage"
 license: MIT
-version: "v1.3.0"
+version: "v1.4.0"
 date-released: "2026-09-24"
 keywords:
   - nerve theorem
