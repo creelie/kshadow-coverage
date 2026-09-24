@@ -5,7 +5,10 @@ typed by hand.
 
     python3 make_paper_numbers.py
 """
+import csv
 import json
+import math
+import statistics
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -42,6 +45,12 @@ def main():
     m['thetaTwo'] = '%.1f' % F['geometry']['covering_radii_deg'][1]
     m['thetaThree'] = '%.1f' % F['geometry']['covering_radii_deg'][2]
     m['nWithFail'] = run['t1']['with_failures']
+    fcount = [int(r['n_bad']) for r in csv.DictReader(
+        (l for l in open(ROOT / 'data' / 'ds003775_channel_status.tsv') if not l.startswith('#')),
+        delimiter='\t') if r['session'] == 'ses-t1']
+    m['failMedian'] = '%d' % statistics.median(fcount)
+    m['failMax'] = max(fcount)
+    m['failNone'] = sum(f == 0 for f in fcount)
     m['PoneP'] = pval(run['t1']['U']['wilcoxon']['p_greater'])
     m['PoneMCratio'] = '%.1f' % run['t1']['U']['montecarlo']['ratio']
     m['PoneMCp'] = pval(run['t1']['U']['montecarlo']['p_greater'])
@@ -127,6 +136,7 @@ def main():
     m['sigRec'] = S['recordings']
     m['sigRows'] = S['rows']
     m['sigMedianR'] = '%.3f' % S['overall']['median_r']
+    m['sigRecTwo'] = S['recordings'] - m['nTone']
     for key, tag in (('P_lambda_t1', 'P'), ('S1_pi_t1', 'Sone'), ('S3_lambda_t2', 'Sthree')):
         t = S[key]
         m['sig%sCh' % tag] = t['channels']
@@ -141,14 +151,25 @@ def main():
     m['sigStwoP'] = pval(t['p'])
 
     X = load('signal_explore.json')
+    xz = X['X3_prediction_z']
+    gain = [xz[b][k] - xz[a][k] for a, b in (('M2', 'M4'), ('M5', 'M6'))
+            for k in ('cv_r2_t1', 'test_r2_t2')]
+    m['topoGainBound'] = '%.3f' % (math.ceil(1000 * max(abs(g) for g in gain)) / 1000)
+    m['siteGain'] = '%.2f' % (xz['M5']['cv_r2_t1'] - xz['M2']['cv_r2_t1'])
     m['lamDev'] = '%.4f' % X['X1_lambda_is_pairwise']['max_abs_deviation']
-    w = X['X2_within_channel_t1']
-    for key, tag in (('lambda', 'Lam'), ('minus_d1', 'Done'), ('minus_mean_d123', 'Dthree'),
-                     ('n_within_2theta', 'Ntwo'), ('lambda_given_d1', 'LamGivenDone'),
-                     ('lambda_given_d123', 'LamGivenDthree')):
-        m['xw%sRho' % tag] = '%.3f' % w[key]['median_rho']
-        m['xw%sP' % tag] = pval(w[key]['p_greater'])
-        m['xw%sCh' % tag] = w[key]['channels']
+    for block, prefix in (('X2_within_channel_t1', 'xw'), ('X2_within_channel_t2', 'xv'),
+                          ('X2_within_channel_t1_centred', 'xc'),
+                          ('X2_within_channel_t2_centred', 'xd')):
+        w = X[block]
+        for key, tag in (('lambda', 'Lam'), ('minus_d1', 'Done'), ('minus_mean_d123', 'Dthree'),
+                         ('n_within_2theta', 'Ntwo'), ('minus_pi', 'Pi'),
+                         ('lambda_given_d1', 'LamGivenDone'),
+                         ('lambda_given_d123', 'LamGivenDthree'),
+                         ('lambda_given_n_good', 'LamGivenNgood')):
+            m['%s%sRho' % (prefix, tag)] = '%.3f' % w[key]['median_rho']
+            m['%s%sP' % (prefix, tag)] = pval(w[key].get('p_greater'))
+            m['%s%sCh' % (prefix, tag)] = w[key]['channels']
+            m['%s%sPos' % (prefix, tag)] = w[key]['positive']
     for out, tag in (('X3_prediction_z', 'z'), ('X3_prediction_nrmse', 'e')):
         for model, v in X[out].items():
             name = 'M' + WORDS[int(model[1:])]
@@ -156,11 +177,16 @@ def main():
             if 'test_r2_t2' in v:
                 m['te%s%s' % (tag, name)] = '%.3f' % v['test_r2_t2']
 
-    G = load('failure_margins.json')
-    for ses, tag in (('ses-t1', 'One'), ('ses-t2', 'Two')):
+    if not (RES / 'failure_margins.json').exists():
+        print('warning: results/failure_margins.json missing; its macros are left out')
+        G = None
+    else:
+        G = load('failure_margins.json')
+    for ses, tag in (('ses-t1', 'One'), ('ses-t2', 'Two')) if G else ():
         g = G[ses]
         for key, kt in (('A', 'A'), ('U', 'U'), ('rho95', 'Reach')):
-            m['mg%s%sObs' % (kt, tag)] = ('%.1f' if key != 'A' else '%d') % (
+            fmt = '%d' if key == 'A' else '%.1f' if key == 'rho95' else '%.2f'
+            m['mg%s%sObs' % (kt, tag)] = fmt % (
                 g['observed'][key] if key != 'U' else 100 * g['observed'][key] / g['recordings'])
             for null, nt in (('margin_preserving', 'Marg'), ('uniform', 'Unif')):
                 e = g[null][key]
@@ -170,7 +196,29 @@ def main():
                 m['mg%s%s%sLo' % (kt, tag, nt)] = fmt % (e['null_q025'] * scale)
                 m['mg%s%s%sHi' % (kt, tag, nt)] = fmt % (e['null_q975'] * scale)
                 m['mg%s%s%sP' % (kt, tag, nt)] = pval(e['p_greater'])
-    m['mgNull'] = G['m_null']
+    if G:
+        m['mgNull'] = G['m_null']
+        m['mgPfloor'] = '%.3f' % (1 / (1 + G['m_null']))
+    C = load('failure_correlation.json')
+    edges = C['bin_edges_deg']
+    first = next(i for i, v in enumerate(C['ses-t1']['g']) if v is not None)
+    m['gBinLo'] = '%d' % edges[first]
+    m['gBinHi'] = '%d' % edges[first + 1]
+    for ses, tag in (('ses-t1', 'One'), ('ses-t2', 'Two')):
+        c = C[ses]
+        m['gFirst%s' % tag] = '%.2f' % c['g'][first]
+        m['gSecond%s' % tag] = '%.2f' % c['g'][first + 1]
+        m['gThird%s' % tag] = '%.2f' % c['g'][first + 2]
+        m['xi%s' % tag] = '%.0f' % c['xi_deg']
+        m['xi%sLo' % tag] = '%.0f' % c['xi_boot_lo']
+        m['xi%sHi' % tag] = '%.0f' % c['xi_boot_hi']
+    m['gNullHiFirst'] = '%.2f' % C['ses-t1']['null_hi'][first]
+    import numpy as np
+    import run_eeg_failures as R
+    _, U = R.load_positions()
+    Dg = np.degrees(np.arccos(np.clip(U @ U.T, -1, 1)))
+    np.fill_diagonal(Dg, np.inf)
+    m['nnSpacing'] = '%.0f' % np.median(Dg.min(1))
 
     OUT.parent.mkdir(exist_ok=True)
     with open(OUT, 'w') as fh:

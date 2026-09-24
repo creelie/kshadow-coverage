@@ -24,7 +24,12 @@ X2  The within-channel natural experiment of test P, repeated with purely
     reversed, so that positive means "closer is better"), the mean of the
     three nearest distances, the number of survivors within 2 theta, and
     lambda given d1 and given (d1, d2, d3) by partial Spearman correlation.
-    One-sided Wilcoxon over channels as in P.
+    One-sided Wilcoxon over channels as in P.  Repeated with z centred
+    within each recording (zc), which removes whatever a recording
+    contributes to every channel at once: a recording with many failed
+    channels gives all of its channels a low lambda, and if it is also a
+    noisy recording, every rebuild in it is worse, with no local effect at
+    all.  Also with z given the recording's number of good channels.
 
 X3  Out-of-sample comparison.  Rebuild quality z, centred within each
     recording (which removes every recording-level effect: subject, noise,
@@ -91,9 +96,13 @@ def load():
         out.append(dict(
             rec=r['recording'], sub=r['recording'].split('_')[0], ses=r['session'],
             ch=r['channel'], ci=c, z=float(r['z']), nrmse=float(r['nrmse']),
+            n_good=int(r['n_good']),
             lam=float(r['lambda']), pi=float(r['pi']), mu=int(r['mu']),
             d=np.degrees(g[:NN]), n2=int((g < 2 * THETA).sum()),
             lam_kernel=float(np.interp(g, grid, Kg).sum())))
+    zc = centred(out, 'z')
+    for r, v in zip(out, zc):
+        r['zc'] = float(v)
     return names, out
 
 
@@ -132,7 +141,7 @@ def summarise(rho):
     return out
 
 
-def x2(rows, session='ses-t1'):
+def x2(rows, session='ses-t1', y='z'):
     by = {}
     for r in rows:
         if r['ses'] == session:
@@ -150,7 +159,7 @@ def x2(rows, session='ses-t1'):
         for ch, rr in by.items():
             v = f(rr)
             if len(rr) >= 10 and len(np.unique(v)) >= 3:
-                rho[ch] = float(stats.spearmanr(v, [r['z'] for r in rr])[0])
+                rho[ch] = float(stats.spearmanr(v, [r[y] for r in rr])[0])
         out[name] = summarise(rho)
     for label, k in (('lambda_given_d1', 1), ('lambda_given_d123', 3)):
         rho = {}
@@ -158,8 +167,15 @@ def x2(rows, session='ses-t1'):
             lam = np.array([r['lam'] for r in rr])
             if len(rr) >= 10 and len(np.unique(lam)) >= 3:
                 D = np.array([r['d'][:k] for r in rr]).T
-                rho[ch] = partial_spearman([r['z'] for r in rr], lam, D)
+                rho[ch] = partial_spearman([r[y] for r in rr], lam, D)
         out[label] = summarise(rho)
+    rho = {}
+    for ch, rr in by.items():
+        lam = np.array([r['lam'] for r in rr])
+        if len(rr) >= 10 and len(np.unique(lam)) >= 3:
+            ng = np.array([[r['n_good'] for r in rr]], float)
+            rho[ch] = partial_spearman([r[y] for r in rr], lam, ng)
+    out['lambda_given_n_good'] = summarise(rho)
     return out
 
 
@@ -239,6 +255,8 @@ def main():
     res['X1_lambda_is_pairwise'] = x1(rows)
     res['X2_within_channel_t1'] = x2(rows, 'ses-t1')
     res['X2_within_channel_t2'] = x2(rows, 'ses-t2')
+    res['X2_within_channel_t1_centred'] = x2(rows, 'ses-t1', 'zc')
+    res['X2_within_channel_t2_centred'] = x2(rows, 'ses-t2', 'zc')
     res['X3_prediction_z'] = x3(rows, 'z')
     res['X3_prediction_nrmse'] = x3(rows, 'nrmse')
     with open(RES / 'signal_explore.json', 'w') as fh:

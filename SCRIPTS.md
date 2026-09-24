@@ -197,6 +197,7 @@ used by the PRE paper.
     python3 run_signal_rebuild.py --sessions t1,t2 --delete-after   # ~17 GB streamed
     python3 run_signal_explore.py
     python3 run_failure_margins.py
+    python3 run_failure_correlation.py
     python3 make_signal_figure.py
     python3 make_paper_numbers.py
     (cd paper && latexmk -pdf kshadow_natphys.tex)
@@ -218,6 +219,10 @@ used by the PRE paper.
   `run_eeg_failures.py` against a null that keeps every recording's failure
   count and every channel's failure rate (curveball swaps). Writes
   `results/failure_margins.json`.
+- `run_failure_correlation.py`  exploratory: co-failure of channel pairs by
+  angular separation against the same margin-preserving null, and the
+  correlation length at which the excess falls to 1/e. Writes
+  `results/failure_correlation.json`.
 - `make_signal_figure.py`  writes `figures/fig_signal.png`.
 - `make_paper_numbers.py`  writes `paper/numbers.tex`, one macro per number
   quoted in `paper/kshadow_natphys.tex`.
