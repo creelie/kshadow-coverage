@@ -193,6 +193,34 @@ used by the PRE paper.
     python3 run_eeg_design.py opt 92
     python3 run_eeg_design.py eval
     python3 make_eeg_figure.py
+    python3 fetch_ds003775_manifest.py      # optional: rebuilds the manifest
+    python3 run_signal_rebuild.py --sessions t1,t2 --delete-after   # ~17 GB streamed
+    python3 run_signal_explore.py
+    python3 run_failure_margins.py
+    python3 make_signal_figure.py
+    python3 make_paper_numbers.py
+    (cd paper && latexmk -pdf kshadow_natphys.tex)
+
+## Signal level and the manuscript
+- `run_signal_rebuild.py`  the pre-specified signal-level test: each good
+  channel of each recording is removed and rebuilt from the others by
+  spherical splines, and rebuild quality is tested against redundancy depth.
+  The plan is in its docstring. Writes `results/signal_rebuild_rows.csv` and
+  `results/signal_rebuild.json`.
+- `fetch_ds003775_manifest.py`  rebuilds `data/ds003775_epochs_manifest.tsv`
+  (path, size, MD5 and S3 version id of every cleaned-epoch file of v1.2.1)
+  from the git-annex branch of the dataset's public mirror.
+- `run_signal_explore.py`  exploratory, written after the test was run: checks
+  that redundancy depth is a pairwise kernel sum, repeats the within-channel
+  test with metric predictors, and compares nested predictive models out of
+  sample. Writes `results/signal_explore.json`.
+- `run_failure_margins.py`  exploratory: the clustering statistics of
+  `run_eeg_failures.py` against a null that keeps every recording's failure
+  count and every channel's failure rate (curveball swaps). Writes
+  `results/failure_margins.json`.
+- `make_signal_figure.py`  writes `figures/fig_signal.png`.
+- `make_paper_numbers.py`  writes `paper/numbers.tex`, one macro per number
+  quoted in `paper/kshadow_natphys.tex`.
 
 All scripts are deterministic (fixed random seeds where randomness is used)
 and were re-run in full for this version of the paper; every number quoted in

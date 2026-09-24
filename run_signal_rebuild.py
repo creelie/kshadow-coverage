@@ -4,7 +4,9 @@ channel can be rebuilt from its neighbours?
 
 Runs on your own machine; the EEG signals of OpenNeuro ds003775 could not be
 reached from the environment in which the rest of the analysis was done.
-On Windows use run_signal_rebuild.ps1, which sets everything up.
+On Windows use run_signal_rebuild.ps1, which sets everything up.  (It has
+since been run on all 153 recordings, with the plan below unchanged; the
+download was repaired to fetch the v1.2.1 object versions, see Data.)
 
 Data
 ----
@@ -14,6 +16,9 @@ per recording, about 115 MB each: 12.7 GB for the 111 first sessions, 17.4
 GB for all 153 recordings.  Files are fetched from OpenNeuro's public
 storage and checked against the size and MD5 recorded for version 1.2.1 in
 data/ds003775_epochs_manifest.tsv; a file that does not match is not used.
+Later versions of the dataset dropped the derivatives folder, so each file
+is requested by the S3 object version that holds its v1.2.1 content, also
+recorded in the manifest (fetch_ds003775_manifest.py rebuilds it).
 Channels the curators marked bad were interpolated by their pipeline, so
 they are used neither as targets nor as inputs.
 
@@ -108,7 +113,8 @@ def load_tables():
     manifest = {}
     for m in read_tsv(ROOT / 'data' / 'ds003775_epochs_manifest.tsv'):
         rec = Path(m['path']).name.split('_task-')[0]
-        manifest[rec] = dict(path=m['path'], size=int(m['size']), md5=m['md5'])
+        manifest[rec] = dict(path=m['path'], size=int(m['size']), md5=m['md5'],
+                             version_id=m['version_id'])
     return names, U, status, manifest
 
 
@@ -121,7 +127,10 @@ def md5sum(path):
     return h.hexdigest()
 
 
-def fetch(entry, data_dir, verify=True, tries=3):
+def fetch(entry, data_dir, verify=True, tries=8):
+    """Download one file; a transfer that stops early is resumed from where
+    it stopped with an HTTP Range request, and the whole file is then checked
+    against its size and MD5."""
     dest = Path(data_dir) / entry['path']
     if dest.exists():
         if not verify:
@@ -130,18 +139,28 @@ def fetch(entry, data_dir, verify=True, tries=3):
             return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_suffix('.part')
+    url = BUCKET + entry['path'] + '?versionId=' + entry['version_id']
     for attempt in range(tries):
         try:
-            with urllib.request.urlopen(BUCKET + entry['path'], timeout=120) as resp, \
-                    open(tmp, 'wb') as out:
-                while True:
-                    block = resp.read(1 << 22)
-                    if not block:
-                        break
-                    out.write(block)
+            have = tmp.stat().st_size if tmp.exists() else 0
+            if have >= entry['size']:
+                tmp.unlink()
+                have = 0
+            req = urllib.request.Request(url)
+            if have:
+                req.add_header('Range', 'bytes=%d-' % have)
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                mode = 'ab' if have and resp.status == 206 else 'wb'
+                with open(tmp, mode) as out:
+                    while True:
+                        block = resp.read(1 << 22)
+                        if not block:
+                            break
+                        out.write(block)
             if tmp.stat().st_size != entry['size']:
                 raise IOError('size %d, expected %d' % (tmp.stat().st_size, entry['size']))
             if verify and md5sum(tmp) != entry['md5']:
+                tmp.unlink()
                 raise IOError('MD5 does not match version 1.2.1')
             tmp.replace(dest)
             return dest
