@@ -24,11 +24,16 @@ Data: 152 recordings, 8673 channel rebuilds. The published file for sub-104_ses-
 - **Dataset download:** the cleaned-epoch files returned 404, because later versions of ds003775 dropped them. Downloads now request the archived v1.2.1 copy of each file, check its MD5, and resume interrupted transfers. The manifest gains a `version_id` column, and `fetch_ds003775_manifest.py` rebuilds it.
 - **README correction:** the 112-contact, 9 mm design was described as certified to level 2. The mesh check finds a hole in the 2-fold region that the certificate misses, because geodesic footprints are not convex. The README now says so.
 
+## Authors and metadata
+- Author details: Aditi Bose (IIIT Hyderabad), Deep Bhattacharjee (corresponding author; formerly EGSPL, Bhubaneswar) and Ushashi Bhattacharya (formerly National Taiwan University), with affiliations and emails in the manuscript, `CITATION.cff` and `.zenodo.json`.
+- The manuscript adds an author contributions statement and cites the preprint the idea grew out of: Bhattacharjee, D.; Bhattacharya, U. *Iterated Nerve Complexes for k-Fold Sensor Coverage*. Preprints 2026, 2026061351. https://doi.org/10.20944/preprints202606.1351.v2. The Zenodo record links to it as a related work.
+
 ## New files
 - `run_signal_explore.py`, `run_failure_margins.py`, `run_failure_correlation.py`: exploratory analyses.
 - `make_signal_figure.py` → `figures/fig_signal.png`.
 - `make_paper_numbers.py` → `paper/numbers.tex`: every number in the manuscript, generated from `results/*.json`.
 - `paper/`: amsart manuscript (`kshadow_natphys.tex`, PDF, bibliography).
+- `RELEASE_NOTES_v1.4.0.md`: these notes.
 - `results/`: `signal_rebuild.json`, `signal_rebuild_rows.csv`, `signal_explore.json`, `failure_margins.json`, `failure_correlation.json`.
 
 ## Reproduce
