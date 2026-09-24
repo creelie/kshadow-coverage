@@ -46,8 +46,15 @@ one of the 3016 gyral vertices of the patch as a contact and some point of
 cortex is still 12.219 mm from all of them, so no array on the envelope of
 the hemisphere with a smaller footprint covers the patch at all.
 
-112 contacts at a 9 mm radius see every point of the patch twice, with
-Δ₁(N) and Δ₂(N) both (1, 0): certified level 2, dropout margin 2.
+112 contacts at a 9 mm radius see every point of the patch twice, by direct
+computation on the mesh. The certificate gives Δ₁(N) and Δ₂(N) both (1, 0),
+but the mesh reference finds one hole in R₂ outside the patch (b₁ = 1) that the
+nerve misses: geodesic footprints on a folded surface are not convex, and 961
+of the 16835 nerve faces fail the discrete disk test, so the nerve theorem
+does not hold there. With 96 contacts at 10 mm the certificate and the mesh
+agree at every level (certified level 2), yet 1.7 mm² of the patch is seen only
+once: a certificate of (1, 0) does not by itself put the target inside R₂.
+Both are in `results/optimal.json`, under `curves.k2`.
 
 ## Quick start
 
@@ -94,8 +101,15 @@ run_eeg_failures.py     real contact failures: pre-specified tests (staged)
 run_eeg_design.py       exploratory reach analysis and layout comparison
 arrangement.py          exact topology of k-fold cap regions, no nerve
 make_eeg_figure.py      figures/fig_eeg.png
-run_signal_rebuild.py   signal-level test, run on your own machine
+run_signal_rebuild.py   signal-level test (pre-specified plan in its docstring)
 run_signal_rebuild.ps1  Windows launcher for it
+fetch_ds003775_manifest.py  rebuilds the epochs manifest with S3 version ids
+run_signal_explore.py   exploratory follow-up of the signal-level test
+run_failure_margins.py  exploratory: failure clustering beyond a rate gradient
+run_failure_correlation.py  exploratory: pair correlation of failure, correlation length
+make_signal_figure.py   figures/fig_signal.png
+make_paper_numbers.py   paper/numbers.tex, every number the manuscript quotes
+paper/                  the amsart manuscript
 upload_kshadow.sh       one-shot push of this folder to GitHub, then a tag
 upload_kshadow.ps1      the same thing for Windows PowerShell
 ```
@@ -130,7 +144,49 @@ the first sessions. On Windows:
 
 It verifies every file against the MD5 of version 1.2.1 recorded in
 `data/ds003775_epochs_manifest.tsv`, resumes if interrupted, and writes
-`results/signal_rebuild.json`.
+`results/signal_rebuild.json`. Later versions of ds003775 dropped the
+derivatives folder, so the plain S3 URL of each file now returns 404; the
+manifest records the S3 object version that still serves the v1.2.1 content,
+and `fetch_ds003775_manifest.py` rebuilds it from the mirror's git-annex
+branch. A download that stops early resumes from where it stopped.
+
+The shipped `results/signal_rebuild.json` and `results/signal_rebuild_rows.csv`
+come from a run on all 153 recordings. The follow-ups, written after that run
+and labelled exploratory, are
+
+    python3 run_signal_explore.py     # results/signal_explore.json
+    python3 run_failure_margins.py    # results/failure_margins.json (about an hour)
+    python3 run_failure_correlation.py  # results/failure_correlation.json
+    python3 make_signal_figure.py
+    python3 make_paper_numbers.py     # then: cd paper && latexmk -pdf kshadow_natphys.tex
+
+## What the signal-level test found
+
+All four pre-specified tests came out in the planned direction: within each
+channel, across the first-session recordings, redundancy depth λ correlates
+with how well the channel is rebuilt from the others (positive for all 64
+channels, median Spearman 0.198, p = 1.8e-12), private territory in the
+opposite direction, λ beyond the nearest distance, and the second sessions
+replicate. With rebuild quality centred within each recording the effect
+remains (median 0.109, p = 3.2e-10).
+
+The exploratory follow-ups decide how to read it. λ is exactly a sum over
+survivors of a lens-area kernel of each survivor's distance (checked on every
+row to 0.0022), so it is geometric by construction. The mean distance to the
+three nearest survivors predicts at least as well. Out of sample, adding λ and
+the non-additive private territory π to the six nearest distances changes R²
+by at most 0.006. Redundancy predicts the rebuild, but through distances; the
+topology adds nothing measurable here.
+
+Contact failures are correlated in space beyond each channel's own failure
+rate: against a null that keeps every recording's failure count and every
+channel's failure rate, adjacent failed pairs, uncovered area and the reach
+needed at 95% (46.0 against 30.7 degrees) are all above every null cohort, in
+both sessions, and co-failure falls to 1/e of its nearest-neighbour excess by
+about 36 degrees.
+
+One second-session file (sub-104_ses-t2) holds no epochs in the published
+dataset and is not used. The manuscript is `paper/kshadow_natphys.tex`.
 
 ## The cortical surface
 
