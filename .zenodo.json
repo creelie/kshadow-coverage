@@ -17,7 +17,8 @@
     },
     {
       "name": "Bhattacharya, Ushashi",
-      "orcid": "0009-0002-2254-3914"
+      "orcid": "0009-0002-2254-3914",
+      "affiliation": "Formerly, National Taiwan University, Taipei, Taiwan"
     }
   ],
   "keywords": [
@@ -27,5 +28,12 @@
     "EEG",
     "contact failure",
     "spherical spline interpolation"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.20944/preprints202606.1351.v2",
+      "relation": "references",
+      "scheme": "doi"
+    }
   ]
 }
