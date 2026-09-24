@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this code, please cite the paper and this archive."
+message: "If you use this code, please cite the paper and this archive. Corresponding author: Deep Bhattacharjee (itsdeep@live.com)."
 title: "Supplementary code for: Topological Certificates of Redundant Coverage for Cortical Electrode Arrays"
 type: software
 authors:
@@ -10,9 +10,12 @@ authors:
   - family-names: Bhattacharjee
     given-names: Deep
     orcid: "https://orcid.org/0000-0003-0466-750X"
+    affiliation: "Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India"
+    email: "itsdeep@live.com"
   - family-names: Bhattacharya
     given-names: Ushashi
     orcid: "https://orcid.org/0009-0002-2254-3914"
+    email: "rai.bhattacharya.in@gmail.com"
 repository-code: "https://github.com/creelie/kshadow-coverage"
 license: MIT
 version: "v1.4.0"
