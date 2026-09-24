@@ -177,6 +177,22 @@ used by the PRE paper.
     python3 make_stability_figure.py
     python3 make_optimal_figure.py
     python3 make_merged_figures.py
+    python3 fetch_ds003775_status.py        # needs git and MNE-Python
+    python3 run_eeg_failures.py main
+    python3 run_eeg_failures.py cert
+    python3 run_eeg_failures.py b1
+    python3 run_eeg_failures.py stress 0 500
+    python3 run_eeg_failures.py stress 500 1000
+    python3 run_eeg_failures.py merge
+    python3 run_eeg_design.py e1
+    python3 run_eeg_design.py opt D1
+    python3 run_eeg_design.py opt 70
+    python3 run_eeg_design.py opt 75
+    python3 run_eeg_design.py opt 80
+    python3 run_eeg_design.py opt 85
+    python3 run_eeg_design.py opt 92
+    python3 run_eeg_design.py eval
+    python3 make_eeg_figure.py
 
 All scripts are deterministic (fixed random seeds where randomness is used)
 and were re-run in full for this version of the paper; every number quoted in

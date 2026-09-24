@@ -15,8 +15,8 @@ authors:
     orcid: "https://orcid.org/0009-0002-2254-3914"
 repository-code: "https://github.com/creelie/kshadow-coverage"
 license: MIT
-version: "v1.0.0"
-date-released: "2026-09-16"
+version: "v1.3.0"
+date-released: "2026-09-24"
 keywords:
   - nerve theorem
   - persistent homology

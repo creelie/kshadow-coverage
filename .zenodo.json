@@ -1,13 +1,27 @@
 {
   "title": "Supplementary code for: Topological Certificates of Redundant Coverage for Cortical Electrode Arrays",
-  "description": "Python implementation of the k-shadow nerve theorem and every computation reported in the paper: exact nerves of disk and geodesic footprint families, k-shadow and subdivision complexes with GF(2) Betti numbers, the redundancy barcode, the discrete disk test, the cortical-surface benchmark on the FieldTrip colin27 template, and the optimal-coverage design search with its covering-radius and packing bounds.",
+  "description": "Python implementation of the k-shadow nerve theorem and every computation reported in the paper: exact nerves of disk and geodesic footprint families, k-shadow and subdivision complexes with GF(2) Betti numbers, the redundancy barcode, the discrete disk test, the cortical-surface benchmark on the FieldTrip colin27 template, and the optimal-coverage design search with its covering-radius and packing bounds, and the analysis of real contact failures on a 64-channel EEG cap (OpenNeuro ds003775) with an exact arrangement check of the certificate.",
   "upload_type": "software",
   "license": "MIT",
-  "version": "v1.0.0",
+  "version": "v1.3.0",
   "creators": [
-    {"name": "Bose, Aditi", "orcid": "0000-0002-3036-8223", "affiliation": "International Institute of Information Technology, Hyderabad"},
-    {"name": "Bhattacharjee, Deep", "orcid": "0000-0003-0466-750X"},
-    {"name": "Bhattacharya, Ushashi", "orcid": "0009-0002-2254-3914"}
+    {
+      "name": "Bose, Aditi",
+      "orcid": "0000-0002-3036-8223",
+      "affiliation": "International Institute of Information Technology, Hyderabad"
+    },
+    {
+      "name": "Bhattacharjee, Deep",
+      "orcid": "0000-0003-0466-750X"
+    },
+    {
+      "name": "Bhattacharya, Ushashi",
+      "orcid": "0009-0002-2254-3914"
+    }
   ],
-  "keywords": ["nerve theorem", "persistent homology", "electrode array coverage"]
+  "keywords": [
+    "nerve theorem",
+    "persistent homology",
+    "electrode array coverage"
+  ]
 }

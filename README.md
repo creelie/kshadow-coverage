@@ -89,8 +89,48 @@ figures/                the paper's nine figures, and the six off-screen
                         renders that need PyVista to rebuild
 legacy_v2/              the earlier brute-force pipeline, kept for provenance
 SCRIPTS.md              the full script map and reproduce sequence
+fetch_ds003775_status.py  builds the real-failure tables from OpenNeuro ds003775
+run_eeg_failures.py     real contact failures: pre-specified tests (staged)
+run_eeg_design.py       exploratory reach analysis and layout comparison
+arrangement.py          exact topology of k-fold cap regions, no nerve
+make_eeg_figure.py      figures/fig_eeg.png
+run_signal_rebuild.py   signal-level test, run on your own machine
+run_signal_rebuild.ps1  Windows launcher for it
 upload_kshadow.sh       one-shot push of this folder to GitHub, then a tag
+upload_kshadow.ps1      the same thing for Windows PowerShell
 ```
+
+## Real contact failures (v1.3.0)
+
+`data/ds003775_channel_status.tsv` lists, for each of the 153 recordings of
+OpenNeuro ds003775 v1.2.1 (doi:10.18112/openneuro.ds003775.v1.2.1, CC0), the
+channels its curators' pipeline marked bad. `fetch_ds003775_status.py`
+rebuilds it from the dataset's public git mirror and checks it against the two
+retention figures of the data descriptor (98/153 and 36/153).
+
+    python3 run_eeg_failures.py main
+    python3 run_eeg_failures.py cert
+    python3 run_eeg_failures.py b1
+    python3 run_eeg_failures.py stress 0 500
+    python3 run_eeg_failures.py stress 500 1000
+    python3 run_eeg_failures.py merge
+    python3 run_eeg_design.py e1
+    python3 run_eeg_design.py opt D1      # and opt 70, 75, 80, 85, 92
+    python3 run_eeg_design.py eval
+    python3 make_eeg_figure.py
+
+The pre-specified plan is in the docstring of `run_eeg_failures.py`; the
+analyses in `run_eeg_design.py` were added afterwards and are exploratory.
+
+The signal-level test (does local redundancy predict how well a dropped
+channel is rebuilt from the others?) needs the EEG signals, about 12.7 GB for
+the first sessions. On Windows:
+
+    powershell -ExecutionPolicy Bypass -File .\run_signal_rebuild.ps1 -DeleteAfter
+
+It verifies every file against the MD5 of version 1.2.1 recorded in
+`data/ds003775_epochs_manifest.tsv`, resumes if interrupted, and writes
+`results/signal_rebuild.json`.
 
 ## The cortical surface
 

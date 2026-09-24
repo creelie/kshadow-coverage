@@ -19,3 +19,9 @@ results/cortex_dist_*.npy
 *.fdb_latexmk
 *.fls
 *.toc
+
+# real-data runs
+.venv/
+_ds003775/
+_ds003775_epochs/
+*.part
