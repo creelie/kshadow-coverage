@@ -1,0 +1,70 @@
+% fig7_designs.tex -- (a) the fewest contacts of the placed sequence that see
+% the target once and twice, against the packing lower bound; (b) the same 64
+% contacts, two placements.  Data: results/ecog_designs.json and
+% results/optimal.json via make_ecog_paper_data.py.
+\documentclass[tikz,border=4pt]{standalone}
+\input{ecogstyle}
+\input{../numbers_ecog.tex}
+\begin{document}
+\begin{tikzpicture}
+\begin{groupplot}[ecog,
+  group style={group size=2 by 1, horizontal sep=2.0cm},
+  width=7.9cm, height=6.4cm,
+]
+% ---------------------------------------------------------------- (a)
+\nextgroupplot[
+  xmin=7.4, xmax=14.6, ymin=0, ymax=150,
+  xtick={8,9,...,14}, ytick={0,25,...,150},
+  xlabel={footprint radius $r$ (mm)},
+  ylabel={fewest contacts},
+  legend style={at={(0.5,-0.24)}, anchor=north},
+]
+  % region where no crown-only array covers X at any count
+  \fill[cAqua, fill opacity=0.10] (axis cs:7.4,0) rectangle (axis cs:\crownFloor,150);
+  \draw[cAqua!70!black, line width=0.8pt, dash pattern=on 4pt off 2pt]
+    (axis cs:\crownFloor,0) -- (axis cs:\crownFloor,150);
+  \node[font=\scriptsize, text=cInk, align=center, fill=white, fill opacity=0.8,
+    text opacity=1, inner sep=2pt]
+    at (axis cs:12.95,118) {right of $\rho_C$ only:\\crown-only arrays\\can cover $X$};
+
+  \addplot[cViolet, line width=1.6pt, mksq] table[x=r, y=n2] {data/min_design.dat};
+  \addlegendentry{$X$ seen twice ($\rho_2<r$)}
+  \addplot[cBlue, line width=1.6pt, mk] table[x=r, y=n1] {data/min_design.dat};
+  \addlegendentry{$X$ seen once ($\rho_1<r$)}
+  \addplot[cInk2, line width=1.0pt, dash pattern=on 3pt off 2pt, mktri,
+    mark options={solid, fill=cInk2, draw=white}]
+    table[x=r, y=bound] {data/min_design.dat};
+  \addlegendentry{packing lower bound, once}
+  % direct labels at the designs
+  \addplot[draw=none, forget plot, nodes near coords, point meta=y,
+    nodes near coords style={font=\scriptsize, text=cInk, anchor=south west, inner sep=2pt},
+    every node near coord/.append style={/pgf/number format/.cd, fixed, precision=0}]
+    table[x=r, y=n1] {data/min_design.dat};
+  \addplot[draw=none, forget plot, nodes near coords, point meta=y,
+    nodes near coords style={font=\scriptsize, text=cInk, anchor=south west, inner sep=2pt},
+    every node near coord/.append style={/pgf/number format/.cd, fixed, precision=0}]
+    table[x=r, y=n2] {data/min_design.dat};
+
+% ---------------------------------------------------------------- (b)
+\nextgroupplot[
+  ybar, bar width=12pt, area legend,
+  xmin=6.8, xmax=13.2, ymin=0, ymax=62,
+  xtick={8,10,12}, ytick={0,10,...,60},
+  xlabel={footprint radius $r$ (mm)},
+  ylabel={share of $X$ no contact sees (\%)},
+  legend style={at={(0.5,-0.24)}, anchor=north},
+  every axis plot/.append style={line width=0pt},
+  nodes near coords, nodes near coords style={font=\scriptsize, text=cInk},
+  point meta=explicit symbolic,
+]
+  \addplot[fill=cOrange, draw=white, line width=0.8pt]
+    table[x=r, y=grid, meta=gridlab] {data/matched.dat};
+  \addlegendentry{documented $8\times8$ grid, 64 contacts}
+  \addplot[fill=cBlue, draw=white, line width=0.8pt]
+    table[x=r, y=greedy, meta=greedylab] {data/matched.dat};
+  \addlegendentry{64 contacts placed by covering radius}
+\end{groupplot}
+\node[panellabel] at ($(group c1r1.north west)+(-1.35,0.45)$) {(a)};
+\node[panellabel] at ($(group c2r1.north west)+(-1.35,0.45)$) {(b)};
+\end{tikzpicture}
+\end{document}

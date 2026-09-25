@@ -1,0 +1,128 @@
+"""
+fold_geometry.py -- the cross-section of fig3_fold.tex.
+
+A schematic slice through folded cortex: gyral crowns near y = 0 and three
+sulci whose banks go down 10 to 14 mm.  Distance is arc length along the pial
+line, the one-dimensional version of the geodesic distance used on the mesh.
+Two arrays with the same footprint radius r are compared:
+
+  (a) a subdural sheet: contacts at a 10 mm pitch along the envelope, each
+      assigned to the nearest crown point below it, as run_cortex.py does on
+      the template surface;
+  (b) contacts placed by covering radius on the whole line (crown and banks),
+      the one-dimensional optimum, with the bank contacts on depth shafts.
+
+For each, the pial line is split into the part some footprint sees and the
+part none does.  Writes data/fold_*.dat and prints the numbers the caption
+quotes.  Pure NumPy; the output is committed, so the figure builds without it.
+"""
+import math
+from pathlib import Path
+
+import numpy as np
+
+HERE = Path(__file__).resolve().parent
+DAT = HERE / 'data'
+DAT.mkdir(exist_ok=True)
+
+R_FOOT = 8.0          # footprint radius, mm
+PITCH = 10.0          # sheet pitch, mm
+CROWN_Y = -1.5        # a point is on a crown when y > CROWN_Y
+DEEP_Y = -4.0         # a contact below this sits in a sulcus: a depth lead
+
+# ------------------------------------------------------------ the pial line
+SULCI = [(17.0, 11.0, 2.2), (43.0, 13.5, 2.4), (69.0, 9.5, 2.0)]   # (x, depth, half-width)
+x = np.linspace(0.0, 86.0, 86001)
+y = 0.9 * np.cos(2 * np.pi * x / 26.0) - 0.9
+for xc, depth, w in SULCI:
+    y -= depth / (1.0 + ((x - xc) / w) ** 8)
+seg = np.hypot(np.diff(x), np.diff(y))
+s = np.r_[0.0, np.cumsum(seg)]             # arc length
+L = float(s[-1])
+crown = y > CROWN_Y
+
+
+def seen_by(contact_s, r):
+    """Boolean mask of pial points within arc length r of some contact."""
+    m = np.zeros_like(s, bool)
+    for c in contact_s:
+        m |= np.abs(s - c) < r
+    return m
+
+
+def covering_radius(contact_s, mask=None):
+    d = np.min(np.abs(s[:, None] - np.asarray(contact_s)[None, :]), axis=1)
+    return float(d.max() if mask is None else d[mask].max())
+
+
+# ------------------------------------------------------------ (a) the sheet
+sheet_x = np.arange(4.0, 86.0, PITCH)
+crown_idx = np.flatnonzero(crown)
+a_idx = [int(crown_idx[np.argmin(np.abs(x[crown_idx] - sx))]) for sx in sheet_x]
+a_s = s[a_idx]
+seen_a = seen_by(a_s, R_FOOT)
+
+# crown floor: the pial point farthest from its nearest crown point
+d_crown = np.full_like(s, np.inf)
+cs = s[crown]
+order = np.searchsorted(cs, s)
+lo = cs[np.clip(order - 1, 0, len(cs) - 1)]
+hi = cs[np.clip(order, 0, len(cs) - 1)]
+d_crown = np.minimum(np.abs(s - lo), np.abs(s - hi))
+d_crown[crown] = 0.0
+floor_i = int(np.argmax(d_crown))
+rho_c = float(d_crown[floor_i])
+
+# ------------------------------------------------------------ (b) by covering radius
+n_b = int(math.ceil(L / (2 * R_FOOT)))
+b_s = (np.arange(n_b) + 0.5) * L / n_b      # optimal for an interval
+b_idx = [int(np.argmin(np.abs(s - c))) for c in b_s]
+seen_b = seen_by(b_s, R_FOOT)
+
+
+def write_curve(name, mask):
+    """x, y and y split into seen/unseen columns (nan elsewhere), thinned."""
+    keep = np.r_[0:len(x):40, len(x) - 1]
+    # keep every boundary point so the segments meet
+    edges = np.flatnonzero(np.diff(mask.astype(int)) != 0)
+    keep = np.unique(np.r_[keep, edges, edges + 1])
+    with open(DAT / name, 'w') as fh:
+        fh.write('x y seen unseen\n')
+        prev = None
+        for i in keep:
+            ys = '%.4f' % y[i] if mask[i] else 'nan'
+            yu = '%.4f' % y[i] if not mask[i] else 'nan'
+            if prev is not None and mask[i] != mask[prev]:
+                # bridge the boundary so there is no gap in either colour
+                ys = '%.4f' % y[i]
+                yu = '%.4f' % y[i]
+            fh.write('%.4f %.4f %s %s\n' % (x[i], y[i], ys, yu))
+            prev = i
+
+
+write_curve('fold_a.dat', seen_a)
+write_curve('fold_b.dat', seen_b)
+with open(DAT / 'fold_contacts_a.dat', 'w') as fh:
+    fh.write('x y sx\n')
+    for i, sx in zip(a_idx, sheet_x):
+        fh.write('%.4f %.4f %.4f\n' % (x[i], y[i], sx))
+with open(DAT / 'fold_contacts_b.dat', 'w') as fh:
+    fh.write('x y depth\n')
+    for i in b_idx:
+        fh.write('%.4f %.4f %d\n' % (x[i], y[i], 1 if y[i] < DEEP_Y else 0))
+
+unseen_a = float(seg[~(seen_a[:-1] & seen_a[1:])].sum())
+print('arc length %.1f mm; sheet: %d contacts, unseen %.1f mm (%.0f%%), '
+      'covering radius %.2f mm' % (L, len(a_s), unseen_a, 100 * unseen_a / L,
+                                   covering_radius(a_s)))
+print('crown floor %.2f mm at x = %.1f, y = %.1f' % (rho_c, x[floor_i], y[floor_i]))
+print('by covering radius: %d contacts (%d deep in a sulcus), covering radius %.2f mm, '
+      'unseen %.2f mm' % (n_b, int((y[b_idx] < DEEP_Y).sum()), covering_radius(b_s),
+                          float(seg[~(seen_b[:-1] & seen_b[1:])].sum())))
+with open(DAT / 'fold_numbers.tex', 'w') as fh:
+    fh.write('%% generated by fold_geometry.py\n')
+    fh.write('\\def\\foldFloorX{%.2f}\\def\\foldFloorY{%.2f}\\def\\foldRhoC{%.1f}\n'
+             % (x[floor_i], y[floor_i], rho_c))
+    fh.write('\\def\\foldNa{%d}\\def\\foldNb{%d}\\def\\foldUnseenPct{%.0f}'
+             '\\def\\foldDeep{%d}\\def\\foldR{%.0f}\n'
+             % (len(a_s), n_b, 100 * unseen_a / L, int((y[b_idx] < DEEP_Y).sum()), R_FOOT))

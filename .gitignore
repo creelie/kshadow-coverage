@@ -25,3 +25,6 @@ results/cortex_dist_*.npy
 _ds003775/
 _ds003775_epochs/
 *.part
+
+# TikZ figure build products of paper/ecog (figures/*.png are kept)
+paper/ecog/tikz/build/

@@ -1,0 +1,87 @@
+% fig3_fold.tex -- why a sheet on the gyral crowns cannot see a folded cortex,
+% and what placing the same contacts by covering radius does.  Schematic
+% cross-section; geometry and numbers from fold_geometry.py.
+\documentclass[tikz,border=4pt]{standalone}
+\input{ecogstyle}
+\input{data/fold_numbers.tex}
+\begin{document}
+\pgfplotsset{
+  fold/.style={
+    width=16.5cm, axis equal image, hide axis,
+    xmin=-1, xmax=87, ymin=-17.5, ymax=7.5,
+    clip=false, unbounded coords=jump,
+  },
+}
+\begin{tikzpicture}[
+  lbl/.style={font=\footnotesize, text=cInk, align=left},
+  ann/.style={-{Stealth[length=5pt]}, line width=0.6pt, cInk2},
+]
+% ================================================================= (a)
+\begin{axis}[fold, name=A]
+  \addplot[name path=bot, draw=none] coordinates {(0,-17.5) (86,-17.5)};
+  \addplot[name path=top, draw=none] table[x=x, y=y] {data/fold_a.dat};
+  \addplot[cCortex] fill between[of=top and bot];
+  \addplot[cBlue, line width=2.4pt] table[x=x, y=seen] {data/fold_a.dat};
+  \addplot[cRed, line width=2.4pt] table[x=x, y=unseen] {data/fold_a.dat};
+  % the sheet and its contacts
+  \addplot[cMuted!70, line width=3.2pt, line cap=round] coordinates {(1,1.3) (86,1.3)};
+  \addplot[only marks, mark=*, mark size=2.6pt, cInk,
+    mark options={draw=white, line width=0.7pt}]
+    table[x=sx, y expr=1.3] {data/fold_contacts_a.dat};
+  \addplot[only marks, mark=*, mark size=1.3pt, cInk]
+    table[x=x, y=y] {data/fold_contacts_a.dat};
+  % crown floor
+  \node[circle, draw=cRed, line width=1.1pt, fill=white, inner sep=1.6pt]
+    (fl) at (axis cs:\foldFloorX,\foldFloorY) {};
+  \coordinate (flt) at (axis cs:54,-12.5);
+  \node[panellabel] at (axis cs:-1,7.3) {(a)};
+  \node[lbl, anchor=west] at (axis cs:3,6.0) {Subdural sheet: \foldNa{} contacts at
+    a 10\,mm pitch on the gyral crowns, footprint radius $r=\foldR$\,mm along the surface};
+  \node[lbl, anchor=west] at (axis cs:3,4.1) {The deep banks and fundi are
+    farther than $r$ from every contact: \foldUnseenPct\% of this line is unseen};
+\end{axis}
+\node[lbl, anchor=south east, text width=2.8cm, font=\scriptsize, inner sep=2pt,
+  align=left, execute at begin node=\raggedright]
+  (flnote) at ($(fl)+(-0.45,-0.42)$) {fundus farthest from the crowns, $\rho_C=\foldRhoC$\,mm${}>r$ from
+  the nearest: no sheet with a smaller footprint sees it, at any pitch};
+\draw[ann] (flnote.east) ++(-0.05,0) -- (fl);
+
+% ================================================================= (b)
+\begin{axis}[fold, name=B, at={(A.south west)}, anchor=north west, yshift=-2mm]
+  \addplot[name path=bot, draw=none] coordinates {(0,-17.5) (86,-17.5)};
+  \addplot[name path=top, draw=none] table[x=x, y=y] {data/fold_b.dat};
+  \addplot[cCortex] fill between[of=top and bot];
+  \addplot[cBlue, line width=2.4pt] table[x=x, y=seen] {data/fold_b.dat};
+  \addplot[cRed, line width=2.4pt] table[x=x, y=unseen] {data/fold_b.dat};
+  % depth shafts, from above the surface down to each contact deep in a
+  % sulcus (the pial line is a graph, so a vertical shaft stays in the sulcus)
+  \foreach \px/\py in {15.3960/-11.8399, 42.0880/-15.0549, 70.2740/-10.4120} {
+    \edef\shaft{\noexpand\draw[cViolet!80!black, line width=1.3pt]
+      (axis cs:\px,2.6) -- (axis cs:\px,\py);
+      \noexpand\fill[cViolet!80!black] (axis cs:\px,2.6) circle (1.6pt);}
+    \shaft
+  }
+  \addplot[only marks, mark=*, mark size=2.6pt, cInk,
+    mark options={draw=white, line width=0.7pt}]
+    table[x=x, y=y, restrict expr to domain={\thisrow{depth}}{0:0}] {data/fold_contacts_b.dat};
+  \addplot[only marks, mark=square*, mark size=2.6pt, cViolet,
+    mark options={draw=white, line width=0.7pt}]
+    table[x=x, y=y, restrict expr to domain={\thisrow{depth}}{1:1}] {data/fold_contacts_b.dat};
+  \node[panellabel] at (axis cs:-1,7.3) {(b)};
+  \node[lbl, anchor=west] at (axis cs:3,6.0) {The same \foldNb{} contacts placed
+    by covering radius along the surface, \foldDeep{} of them deep in a sulcus
+    (squares: depth leads)};
+  \node[lbl, anchor=west] at (axis cs:3,4.1) {Every point is within $r$ of a
+    contact: nothing of the line is unseen};
+\end{axis}
+% ================================================================ legend
+\begin{scope}[shift={($(B.south west)+(0.3,-0.6)$)}]
+  \draw[cBlue, line width=2.4pt] (0,0) -- (0.7,0);
+  \node[lbl, anchor=west] at (0.8,0) {seen by some contact};
+  \draw[cRed, line width=2.4pt] (4.0,0) -- (4.7,0);
+  \node[lbl, anchor=west] at (4.8,0) {seen by none};
+  \fill[cCortex] (7.3,-0.18) rectangle (8.0,0.18);
+  \node[lbl, anchor=west] at (8.1,0) {cortex (schematic, not to anatomical scale)};
+\end{scope}
+\end{tikzpicture}
+\end{document}

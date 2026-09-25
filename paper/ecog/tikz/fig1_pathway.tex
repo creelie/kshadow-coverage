@@ -1,0 +1,63 @@
+% fig1_pathway.tex -- where electrode coverage enters the surgical pathway.
+\documentclass[tikz,border=4pt]{standalone}
+\input{ecogstyle}
+\begin{document}
+\begin{tikzpicture}[
+  font=\footnotesize,
+  box/.style={rectangle, rounded corners=3pt, draw=cInk2, line width=0.6pt,
+    fill=white, align=center, text width=3.45cm, minimum height=1.7cm,
+    inner sep=4pt, execute at begin node={\hyphenpenalty=10000}},
+  focus/.style={box, draw=cBlue, line width=1.3pt, fill=cBlueLight!45},
+  good/.style={box, draw=cBlue, line width=0.9pt},
+  bad/.style={box, draw=cRed, line width=0.9pt, fill=cRed!6},
+  dec/.style={diamond, aspect=1.6, draw=cInk2, line width=0.6pt, fill=cWash,
+    align=center, inner sep=0pt, text width=1.75cm},
+  flow/.style={-{Stealth[length=7pt,width=6pt]}, line width=1.0pt, color=cInk2},
+  lab/.style={font=\footnotesize\itshape, text=cInk2},
+  hd/.style={font=\small\bfseries},
+  stepno/.style={circle, fill=cInk, text=white, font=\scriptsize\bfseries\sffamily,
+    inner sep=1.3pt, minimum size=13pt},
+]
+% ---------------------------------------------------------------- row 1
+\node[box] (dre) {{\small\bfseries Drug-resistant focal epilepsy}\\[2pt]
+  seizures continue after two appropriate, tolerated drugs};
+\node[box, right=0.7cm of dre] (noninv) {{\small\bfseries Non-invasive evaluation}\\[2pt]
+  semiology, scalp video-EEG, MRI, PET, SPECT, MEG};
+\node[box, right=0.7cm of noninv] (hyp) {{\small\bfseries Hypothesis}\\[2pt]
+  a cortical territory $X$ that should contain the onset zone};
+\node[focus, right=0.7cm of hyp] (design) {{\small\bfseries Implantation design}\\[2pt]
+  place $n$ contacts so that every point of $X$ is seen $k$ times};
+% ---------------------------------------------------------------- row 2
+\node[box, below=1.1cm of design] (monitor) {{\small\bfseries Invasive monitoring}\\[2pt]
+  subdural grids and strips (ECoG) or depth leads (SEEG)};
+\node[dec] (seen) at (hyp |- monitor) {Is the onset zone seen whole?};
+\node[good] (loc) at (noninv |- monitor) {{\small\bfseries Onset zone delineated}\\[2pt]
+  resection or ablation planned around it};
+\node[good] (outcome) at (dre |- monitor) {{\small\bfseries Seizure outcome}\\[2pt]
+  Engel or ILAE class; the aim is freedom from seizures};
+% ---------------------------------------------------------------- row 3
+\node[bad, below=0.85cm of seen] (miss) {{\small\bfseries Missed or truncated}\\[2pt]
+  false or partial localisation; a second implantation, or no surgery};
+\node[box, draw=cViolet, line width=0.9pt, fill=cViolet!5]
+  (fail) at (monitor |- miss) {{\small\bfseries Contacts fail}\\[2pt]
+  with $k$-fold coverage, any $k-1$ failures leave the zone seen whole};
+% ---------------------------------------------------------------- arrows
+\draw[flow] (dre) -- (noninv);
+\draw[flow] (noninv) -- (hyp);
+\draw[flow] (hyp) -- (design);
+\draw[flow] (design) -- (monitor);
+\draw[flow] (monitor) -- (seen);
+\draw[flow] (seen) -- node[lab, above] {yes} (loc);
+\draw[flow, cRed] (seen) -- node[lab, right] {no} (miss);
+\draw[flow] (loc) -- (outcome);
+\draw[flow, dashed, cViolet] (monitor) -- (fail);
+% steps
+\node[stepno] at (design.north west) {1};
+\node[stepno] at (monitor.north east) {2};
+\node[stepno] at (loc.north east) {3};
+% brace over the part this paper computes
+\draw[decorate, decoration={brace, amplitude=6pt, raise=3pt}, line width=0.8pt, cBlue]
+  (design.north west) -- (design.north east)
+  node[midway, above=10pt, font=\footnotesize\bfseries, text=cBlue] {computed in this paper};
+\end{tikzpicture}
+\end{document}

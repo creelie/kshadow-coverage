@@ -41,10 +41,15 @@ footprint radius:
 Same target, same footprint radius, nearly the same contact count. What
 separates them is where the contacts sit.
 
-Contacts confined to gyral crowns cannot reach this at any count. Take every
-one of the 3016 gyral vertices of the patch as a contact and some point of
-cortex is still 12.219 mm from all of them, so no array on the envelope of
-the hemisphere with a smaller footprint covers the patch at all.
+Contacts confined to gyral crowns cannot reach this at any count. Counting
+every gyral crown within 25 mm of the patch (7279 crown vertices), some point
+of the patch is 10.94 mm from its nearest crown; on the triangle rule, where a
+triangle counts as seen only when one contact is within the footprint radius
+of all three of its vertices, the crown floor is 11.24 mm. No crown-only array
+covers the patch at a footprint radius at or below that floor, at any contact
+count. (Counting only the 3016 gyral vertices inside the patch gives 12.219
+mm, the figure in `paper/kshadow_natphys.tex`; a sheet's contacts are not
+confined to those.)
 
 112 contacts at a 9 mm radius see every point of the patch twice, by direct
 computation on the mesh. The certificate gives Δ₁(N) and Δ₂(N) both (1, 0),
@@ -110,6 +115,10 @@ run_failure_correlation.py  exploratory: pair correlation of failure, correlatio
 make_signal_figure.py   figures/fig_signal.png
 make_paper_numbers.py   paper/numbers.tex, every number the manuscript quotes
 paper/                  the amsart manuscript
+run_ecog_designs.py     triangle-rule covering radii, designs, crown floor (ECoG paper)
+run_soz_capture.py      onset-zone capture and random-failure analysis (ECoG paper)
+make_ecog_paper_data.py paper/ecog/numbers_ecog.tex and the TikZ plot tables
+paper/ecog/             the ECoG coverage manuscript, TikZ figure sources, PNGs
 upload_kshadow.sh       one-shot push of this folder to GitHub, then a tag
 upload_kshadow.ps1      the same thing for Windows PowerShell
 ```
@@ -187,6 +196,51 @@ about 36 degrees.
 
 One second-session file (sub-104_ses-t2) holds no epochs in the published
 dataset and is not used. The manuscript is `paper/kshadow_natphys.tex`.
+
+## Optimal ECoG coverage (paper/ecog)
+
+`paper/ecog/ecog_coverage.tex` (amsart, short title *Optimal ECoG coverage*)
+states electrode placement for epilepsy surgery as a covering-radius problem
+on the folded cortex: every point of the territory suspected of generating the
+seizures is seen by at least k contacts exactly when the k-th covering radius
+is below the footprint radius, and then every onset zone in the territory is
+seen whole after any k - 1 contacts fail. On the triangle mesh this stays exact
+when the covering radius is taken over triangles, the distance from a contact
+to a triangle being the distance to its farthest vertex; that is the rule the
+unseen areas above are measured with. On the parietal patch, at an 8 mm
+footprint:
+
+| design | covering radius | patch unseen | 5 mm onset zone seen whole |
+|---|---|---|---|
+| documented 8x8 grid, 64 contacts | 21.96 mm | 2082.0 mm² | 18.5% of positions |
+| 64 crown contacts | 11.24 mm | 89.7 mm² | 82.6% |
+| 64 contacts by covering radius | 8.12 mm | 1.0 mm² | 98.1% |
+| 66 contacts by covering radius | 7.77 mm | 0 | 100% |
+
+The largest onset zone the grid can miss entirely has a radius of 14.5 mm.
+Counting every gyral crown within reach of the patch, some part of it is 11.24
+mm from its nearest crown (triangle rule), so no crown-only array covers it at
+a footprint radius at or below that floor. Seeing the patch twice takes 132
+contacts at 8 mm; after 8 random contact failures they still see a 5 mm onset
+zone whole in 99.8% of positions on average, where the 66-contact
+single-coverage design falls to 78.6%. These are template-brain geometry, not
+patient outcomes; the paper states the protocol that would test whether better
+coverage changes seizure outcome.
+
+Two statements made earlier in this repository are corrected there. The
+fewest contacts covering the patch at 12 mm is 29, not 30 (`run_optimal3.py`
+scans in steps of two). The crown floor of 12.219 mm counts only the crown
+vertices inside the patch; a sheet's contacts are not confined to them (49 of
+the 64 grid contacts lie outside it), and with every crown within reach the
+floor is 10.94 mm on the vertex rule and 11.24 mm on the triangle rule.
+
+Every figure except the cortex render is a TikZ/pgfplots source in
+`paper/ecog/tikz/`, rendered to PNG at 600 dpi:
+
+    python3 run_ecog_designs.py       # results/ecog_designs.json, ~5 min
+    python3 run_soz_capture.py        # results/soz_capture.json, ~1 min
+    python3 make_ecog_paper_data.py   # macros and plot tables
+    cd paper/ecog && ./build.sh       # figures/*.png, then ecog_coverage.pdf
 
 ## The cortical surface
 
