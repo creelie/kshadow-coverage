@@ -15,13 +15,13 @@
 \graphicspath{{figures/}}
 
 \input{numbers_ecog.tex}
-% The code release and its Zenodo archive, quoted in the Acknowledgements and
-% Code availability.  Update both when the release carrying this paper is
-% tagged and archived.
+% The code release carrying this paper and its Zenodo archive, quoted in the
+% Code availability and Acknowledgements.  Release v1.5.0 (tag at commit
+% b336049) holds the Python code, results and figure sources of this paper;
+% the Lean formalization in lean/ was merged after it.
 \newcommand{\codeRepo}{\url{https://github.com/creelie/kshadow-coverage}}
-\newcommand{\codeRelease}{v1.4.0}
-\newcommand{\zenodoDOI}{10.5281/zenodo.22822523}
-\newcommand{\zenodoRelease}{v1.2.0}
+\newcommand{\codeRelease}{v1.5.0}
+\newcommand{\zenodoDOI}{10.5281/zenodo.22953062}
 \input{tikz/data/fold_numbers.tex}
 
 \newtheorem{theorem}{Theorem}
@@ -895,13 +895,13 @@ below.
 \section*{Code availability}
 \begin{sloppypar}
 All code, result files and figure sources are in the GitHub repository
-\codeRepo~\cite{kshadowcode}. The designs and certificates are those of
-release \codeRelease; \texttt{run\_ecog\_designs.py},
-\texttt{run\_soz\_capture.py}, the Lean formalization in \texttt{lean/} and
-the figure sources of this paper are added after it.
-The repository is archived on Zenodo, release \zenodoRelease{} at
-\href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}. This manuscript is
-\texttt{paper/ecog/ecog\_coverage.tex}, built by
+\codeRepo~\cite{kshadowcode}. The Python code of this paper
+(\texttt{run\_ecog\_designs.py}, \texttt{run\_soz\_capture.py} and the
+designs and certificates they build on), its result files and its figure
+sources are release \codeRelease, archived on Zenodo at
+\href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}. The Lean formalization in
+\texttt{lean/} was added to the repository after that release. This
+manuscript is \texttt{paper/ecog/ecog\_coverage.tex}, built by
 \texttt{paper/ecog/build.sh}. Every number in it is a macro generated from the
 result files.
 \end{sloppypar}
@@ -910,9 +910,8 @@ result files.
 \begin{sloppypar}
 The Python computations and the Lean~4 formalization of this paper were
 carried out with the assistance of Claude (Anthropic). They use the code in
-the GitHub repository
-\codeRepo{} (building on release \codeRelease; Zenodo archive
-\href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}, release \zenodoRelease).
+the GitHub repository \codeRepo{}, release \codeRelease{}, archived on Zenodo
+at \href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}.
 \end{sloppypar}
 
 \section*{Author contributions}

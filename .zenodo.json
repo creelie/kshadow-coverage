@@ -1,9 +1,8 @@
 {
   "title": "Supplementary code for: Topological Certificates of Redundant Coverage for Cortical Electrode Arrays",
-  "description": "Python implementation of the k-shadow certificate and every computation reported in the paper: exact nerves of disk and geodesic footprint families, k-shadow and subdivision complexes with GF(2) Betti numbers, the redundancy barcode, the cortical-surface benchmark on the FieldTrip colin27 template, the optimal-coverage design search, and the analysis of real contact failures on a 64-channel EEG cap (OpenNeuro ds003775 v1.2.1), with an exact arrangement check of the certificate. v1.4.0 adds the pre-specified signal-level test run on all 152 usable recordings (does redundancy predict how well a dropped channel is rebuilt?), exploratory analyses of what it can and cannot say about topology, a margin-preserving null and correlation length for spatially correlated contact failures, a repaired versioned download of the dataset, and the amsart manuscript with every number generated from the result files.",
+  "description": "Python implementation of the k-shadow certificate and every computation reported in the paper: exact nerves of disk and geodesic footprint families, k-shadow and subdivision complexes with GF(2) Betti numbers, the redundancy barcode, the cortical-surface benchmark on the FieldTrip colin27 template, the optimal-coverage design search, and the analysis of real contact failures on a 64-channel EEG cap (OpenNeuro ds003775 v1.2.1), with an exact arrangement check of the certificate. v1.4.0 adds the pre-specified signal-level test run on all 152 usable recordings (does redundancy predict how well a dropped channel is rebuilt?), exploratory analyses of what it can and cannot say about topology, a margin-preserving null and correlation length for spatially correlated contact failures, a repaired versioned download of the dataset, and the amsart manuscript with every number generated from the result files. v1.5.0 adds the manuscript Optimal ECoG Coverage for Epilepsy Surgery (paper/ecog), which states electrode placement for epilepsy surgery as a covering-radius problem on the folded cortex, with the triangle-rule covering radii, fewest-contact designs, crown site floor, onset-zone capture and random-failure analysis behind it and TikZ sources for its figures. Releases after v1.5.0 also carry a Lean 4 formalization of that paper's propositions on the mesh (lean/).",
   "upload_type": "software",
   "license": "MIT",
-  "version": "v1.4.0",
   "creators": [
     {
       "name": "Bose, Aditi",
@@ -27,7 +26,11 @@
     "electrode array coverage",
     "EEG",
     "contact failure",
-    "spherical spline interpolation"
+    "spherical spline interpolation",
+    "electrocorticography",
+    "epilepsy surgery",
+    "covering radius",
+    "Lean 4"
   ],
   "related_identifiers": [
     {

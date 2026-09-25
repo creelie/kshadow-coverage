@@ -284,4 +284,5 @@ FieldTrip toolbox it is derived from; see `LICENSE`.
 ## Citing
 
 `CITATION.cff` has the machine-readable record. Please cite the paper
-alongside this archive.
+alongside this archive. Release v1.5.0, which carries the ECoG coverage paper,
+is archived on Zenodo at https://doi.org/10.5281/zenodo.22953062.
