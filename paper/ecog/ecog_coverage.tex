@@ -101,8 +101,8 @@ protocol that would test it.
 Epilepsy is drug-resistant when two appropriately chosen and tolerated
 antiseizure medications have failed~\cite{Kwan2010}, and a substantial
 minority of patients reach that point~\cite{KwanBrodie2000}. For focal
-drug-resistant epilepsy, resective surgery is the treatment that can end the
-seizures. For temporal lobe epilepsy, randomised trials found it better than
+drug-resistant epilepsy, resective surgery can end the
+seizures~\cite{JobstCascino2015}. For temporal lobe epilepsy, randomised trials found it better than
 continued medical therapy~\cite{Wiebe2001,Engel2012}. Its stated goal is
 freedom from disabling seizures (Engel class~I) or from all seizures (ILAE
 class~1)~\cite{Engel1993,Wieser2001,JobstCascino2015}. Surgery aims at the
@@ -150,7 +150,7 @@ the covering radius is below $r$, an onset zone of any size and position in
 $X$ is seen whole, and stays seen whole after any $k-1$ contacts fail. Second,
 a design rule that meets the guarantee; for single coverage with sites anywhere
 on $X$ it is provably within a factor of two of the best covering radius for
-its contact count. Third, an obstruction: contacts confined to the gyral
+its contact count, up to one mesh edge. Third, an obstruction: contacts confined to the gyral
 crowns, as on a subdural sheet, cannot meet the guarantee below a radius that
 is fixed by the folding and not by the number of contacts.
 
@@ -257,7 +257,7 @@ When $X\not\subseteq R_k$ the answer depends on the size and position of the
 onset zone. Model it as the closed geodesic disk
 $Z_s(x)=\{y:\dd(x,y)\le s\}$ of radius $s$ about a centre $x$, admissible when
 $Z_s(x)\subseteq X$, and let $A_s$ be the set of admissible centres. With
-$\mu$ the area measure, define
+$\mu$ the area measure, define, for every $s$ with $\mu(A_s)>0$,
 \[
 W_k(s)=\frac{\mu\{x\in A_s:Z_s(x)\subseteq R_k\}}{\mu(A_s)},\qquad
 L(s)=\frac{\mu\{x\in A_s:Z_s(x)\cap R_1=\emptyset\}}{\mu(A_s)}.
@@ -270,14 +270,15 @@ the model. With a patient-specific prior, for instance from the concordance of
 non-invasive tests, $\mu$ is replaced by that prior and nothing else changes.
 
 \begin{proposition}[capture by erosion]\label{prop:erosion}
-$Z_s(x)\subseteq R_k$ if and only if $\dd(x,M\setminus R_k)>s$, and $Z_s(x)\cap
-R_1=\emptyset$ if and only if $\dd(x,R_1)\ge s$. Consequently:
+$Z_s(x)\subseteq R_k$ if and only if $\dd(x,M\setminus R_k)>s$. For $s>0$,
+$Z_s(x)\cap R_1=\emptyset$ if and only if $\dd(x,R_1)\ge s$; for $s=0$, if
+and only if $x\notin R_1$. Consequently, for every $s$ with $\mu(A_s)>0$:
 \begin{enumerate}
-\item if $X\subseteq R_k$ then $W_k(s)=1$ and $L(s)=0$ for every $s\ge0$, and
+\item if $X\subseteq R_k$ then $W_k(s)=1$ and $L(s)=0$, and
 $W_k(0)=\mu(X\cap R_k)/\mu(X)$ in general;
-\item with $h(P)=\max_{x\in X}\min\{\dd(x,R_1),\,\dd(x,M\setminus X)\}$, $L(s)>0$
-for every $s<h(P)$ and $L(s)=0$ for every $s>h(P)$: $h(P)$ is the radius of
-the largest onset zone the array can miss entirely. Moreover
+\item with $h(P)=\max_{x\in X}\min\{\dd(x,R_1),\,\dd(x,M\setminus X)\}$,
+$L(s)>0$ if $s<h(P)$ and $L(s)=0$ if $s>h(P)$: $h(P)$ is the radius of the
+largest onset zone the array can miss entirely. Moreover
 \[
 h(P)\ \ge\ \max_{x\in X}\min\{\dd_1(x,P)-r,\ \dd(x,M\setminus X)\}.
 \]
@@ -286,12 +287,13 @@ h(P)\ \ge\ \max_{x\in X}\min\{\dd_1(x,P)-r,\ \dd(x,M\setminus X)\}.
 
 \begin{proof}
 The set $M\setminus R_k$ is closed, so it avoids the closed disk $Z_s(x)$
-exactly when its distance from $x$ exceeds $s$. The set $R_1$ is open: if
-$\dd(x,R_1)\ge s$ and some $y\in R_1$ had $\dd(x,y)\le s$, then
-$\dd(x,y)=s$, and points of a shortest path from $x$ to $y$ close to $y$ would
-lie in $R_1$ at distance less than $s$; so $Z_s(x)\cap R_1=\emptyset$ exactly
-when $\dd(x,R_1)\ge s$. The same argument with the open set $M\setminus X$
-shows that $x$ is admissible exactly when $\dd(x,M\setminus X)\ge s$. For (1),
+exactly when its distance from $x$ exceeds $s$. The set $R_1$ is open. Let
+$s>0$: if $\dd(x,R_1)\ge s$ and some $y\in R_1$ had $\dd(x,y)\le s$, then
+$\dd(x,y)=s>0$, and points of a shortest path from $x$ to $y$ close to $y$
+would lie in $R_1$ at distance less than $s$; so $Z_s(x)\cap R_1=\emptyset$
+exactly when $\dd(x,R_1)\ge s$. The same argument with the open set
+$M\setminus X$ shows that, for $s>0$, $x$ is admissible exactly when
+$\dd(x,M\setminus X)\ge s$, while $A_0=X$. For (1),
 if $X\subseteq R_k$ every admissible disk lies in $R_k$ and meets $R_1$; and
 $A_0=X$, $Z_0(x)=\{x\}$. For (2), if $s<h(P)$ the set of $x$ with
 $\dd(x,R_1)>s$ and $\dd(x,M\setminus X)>s$ is open, by continuity of both
@@ -418,7 +420,7 @@ each lies in a seen triangle and so within $r$ of the contact that sees it.
 \label{prop:greedy}
 On a mesh, let $p_1,p_2,\dots$ be vertices of $X$, each $p_{j+1}$ a vertex of
 $X$ farthest from $P_j=\{p_1,\dots,p_j\}$. Then for every $n$ and every set $Q$
-of $n$ points of $M$, $\rho_1^{\mathrm{v}}(P_n)\le2\rho_1^{\mathrm{v}}(Q)$, and
+of $n$ vertices of $M$, $\rho_1^{\mathrm{v}}(P_n)\le2\rho_1^{\mathrm{v}}(Q)$, and
 $\rho_1(P_n)\le2\rho_1(Q)+\ell$.
 \end{proposition}
 
@@ -469,9 +471,11 @@ in Fig.~\ref{fig:algorithm}. Given $M$, $X$, $C$, $r$ and $k$: compute the
 site floor $\rho_C^{(k)}$ over every admissible site that can reach $X$. If
 $\rho_C^{(k)}\ge r$ the sites are infeasible (Proposition~\ref{prop:sitefloor}),
 and $C$ has to be enlarged, with depth leads or strips placed into the sulci,
-or a larger radius accepted. Otherwise add contacts by farthest-point
-sampling, updating $\rho_1,\dots,\rho_k$ exactly after each, until
-$\rho_k<r$; by Proposition~\ref{prop:cover} the design then sees all of $X$
+or a larger radius accepted. Otherwise add contacts one at a time, updating
+$\rho_1,\dots,\rho_k$ exactly after each, until $\rho_k<r$: when sites may be
+anywhere on $X$, by farthest-point sampling; when they are restricted to $C$,
+by adding the site of $C$ closest, in $e(c,T)$, to the worst covered triangle
+of $X$; by Proposition~\ref{prop:cover} the design then sees all of $X$
 $k$ times, on the mesh and triangle by triangle. Then report the certificate of
 the covered region with its disk test, and the capture curves $W_1$, $W_k$ and
 $L$. The procedure needs the patient's pial surface, which can be
@@ -484,9 +488,10 @@ tools~\cite{Dale1999,Fischl2012}.
 \caption{The design procedure. The site-floor test
 (Proposition~\ref{prop:sitefloor}, with the $k$-th nearest site) rules out,
 before any placement, admissible sites that cannot see $X$ $k$ times at radius
-$r$. Farthest-point steps add contacts until the $k$-th covering radius drops
+$r$. Greedy steps add contacts until the $k$-th covering radius drops
 below $r$ (Proposition~\ref{prop:cover}); for $k=1$ with sites anywhere on $X$
-they are within a factor two of optimal (Proposition~\ref{prop:greedy}). The
+they are within a factor two of optimal, up to one mesh edge
+(Proposition~\ref{prop:greedy}). The
 design is then checked on the mesh and its onset-zone capture is reported
 (Proposition~\ref{prop:erosion}).}
 \label{fig:algorithm}
@@ -629,8 +634,10 @@ $r=8$\,mm, an onset zone of radius $5$\,mm is seen whole in
 $\capWholeFiveGridEight\%$ of its possible positions and missed entirely in
 $\capMissFiveGridEight\%$; one of radius $10$\,mm is seen whole in
 $\capWholeTenGridEight\%$, and one of radius up to $\capHiddenGridEight$\,mm can
-lie in $X$ and be missed entirely, in line with the continuous bound
-$\rho_1-r=\gridHideBound$\,mm of Proposition~\ref{prop:erosion}(2).
+lie in $X$ and be missed entirely. The lower bound of
+Proposition~\ref{prop:erosion}(2), $\max_x\min\{\dd_1(x,P)-r,\,
+\dd(x,M\setminus X)\}$, evaluated at the vertices of $X$, is
+$\gridHideBound$\,mm.
 Sixty-four crown contacts never miss a $5$\,mm onset zone entirely but see it
 whole in only $\capWholeFiveCrownEight\%$ of positions: the rest are seen in
 part, the case of truncated localisation. The same 64 contacts placed anywhere
@@ -679,8 +686,9 @@ radius. (b) Missed entirely, $L(s)$; designs that see all of $X$ miss nothing,
 and 64 placed contacts can miss only onset zones smaller than
 $\capHiddenFreeSixtyFour$\,mm, too small to show. (c) Seen twice, $W_2(s)$,
 which by Proposition~\ref{prop:failure} is the share still seen whole after any
-one contact fails: single-coverage designs (blue) lose it quickly with $s$,
-double-coverage designs (violet) keep it. Data from
+one contact fails: single-coverage designs (blue) lose it quickly with $s$, and both
+double-coverage designs (violet) keep it at $100\%$ for every $s$, so their
+lines coincide. Data from
 \texttt{run\_soz\_capture.py}.}
 \label{fig:capture}
 \end{figure}

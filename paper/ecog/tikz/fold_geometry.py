@@ -62,7 +62,7 @@ a_idx = [int(crown_idx[np.argmin(np.abs(x[crown_idx] - sx))]) for sx in sheet_x]
 a_s = s[a_idx]
 seen_a = seen_by(a_s, R_FOOT)
 
-# crown floor: the farthest pial point from every crown point
+# crown floor: the pial point farthest from its nearest crown point
 d_crown = np.full_like(s, np.inf)
 cs = s[crown]
 order = np.searchsorted(cs, s)

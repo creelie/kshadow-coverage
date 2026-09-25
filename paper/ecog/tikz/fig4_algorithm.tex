@@ -25,8 +25,9 @@
 \node[proc, below=of in] (dist) {\textbf{Geodesic distances.} Edge-weighted
   Dijkstra on $M$ from each chosen site; nothing is rasterised.};
 \node[dec, below=of dist] (floor) {$\rho_C^{(k)}<r$\,?\\[1pt]{\scriptsize site floor}};
-\node[key, below=0.7cm of floor] (greedy) {\textbf{Farthest-point step.} Add the
-  site of $C$ farthest from the contacts chosen so far; update
+\node[key, below=0.7cm of floor] (greedy) {\textbf{Greedy step.} Add the vertex
+  of $X$ farthest from the contacts so far (sites anywhere on $X$), or the site
+  of $C$ closest to the worst covered triangle (restricted sites); update
   $\rho_1(P_n),\dots,\rho_k(P_n)$ exactly (triangle rule).};
 \node[dec, below=of greedy] (cover) {$\rho_k(P_n)<r$\,?};
 \node[proc, below=0.7cm of cover] (verify) {\textbf{Verify on the mesh.}

@@ -41,20 +41,21 @@
     at (axis cs:67,\capRhoOneGridEight) {$8\times8$ grid: $\rho_1=\capRhoOneGridEight$\,mm};
   \node[font=\footnotesize, text=cInk, anchor=south east]
     at (axis cs:160,\crownFloor) {crown floor $\rho_C=\crownFloor$\,mm};
-  \draw[-{Stealth[length=5pt]}, line width=0.6pt, cInk2]
-    (axis cs:84,1.5) node[anchor=west, font=\footnotesize, text=cInk]
-    {64 placed: $\rho_1=\rhoFreeSixtyFour$\,mm${}>8$}
-    -- (axis cs:64.8,\rhoFreeSixtyFour);
+  \node[anchor=west, font=\footnotesize, text=cInk] (l64) at (axis cs:4,3.4)
+    {64 placed: $\rho_1=\rhoFreeSixtyFour$\,mm${}>8$};
+  \coordinate (p64) at (axis cs:64,\rhoFreeSixtyFour);
   \addplot[only marks, mark=*, mark size=2.4pt, cBlue,
     mark options={draw=white, line width=0.8pt}, forget plot]
     coordinates {(64,\rhoFreeSixtyFour)};
   \addplot[only marks, mark=*, mark size=2.4pt, cBlue,
     mark options={draw=white, line width=0.8pt}, forget plot]
     coordinates {(\minNOneEight,\minRhoOneEight)};
-  \draw[-{Stealth[length=5pt]}, line width=0.6pt, cInk2]
+  \draw[-{Stealth[length=5pt]}, line width=0.6pt, cInk2, shorten >=3.4pt]
     (axis cs:84,3.6) node[anchor=west, font=\footnotesize, text=cInk]
     {\minNOneEight{} placed: $\rho_1=\minRhoOneEight$\,mm${}<8$}
-    -- (axis cs:\minNOneEight.8,\minRhoOneEight);
+    -- (axis cs:\minNOneEight,\minRhoOneEight);
 \end{axis}
+\draw[-{Stealth[length=5pt]}, line width=0.6pt, cInk2, shorten >=3.4pt]
+  (l64.east) -- (p64);
 \end{tikzpicture}
 \end{document}

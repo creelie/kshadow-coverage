@@ -195,7 +195,7 @@ for name, rec in Dz.items():
     mac('capUnseen' + t, f(rec['unseen_mm2']['1']))
     mac('capOnce' + t, f(rec['unseen_mm2']['2']))
 g8 = Dz['grid64_r8']
-mac('gridHideBound', f(g8['rho1_mm'] - g8['radius_mm'], 2))
+mac('gridHideBound', f(g8['hide_bound_mm'], 2))
 mac('gridRhoRatio', '%d' % round(g8['rho1_mm'] / Dz['free64_r8']['rho1_mm']))
 
 # ------------------------------------------------------------ random dropout

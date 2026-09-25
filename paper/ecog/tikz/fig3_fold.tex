@@ -42,9 +42,8 @@
 \end{axis}
 \node[lbl, anchor=south east, text width=2.8cm, font=\scriptsize, inner sep=2pt,
   align=left, execute at begin node=\raggedright]
-  (flnote) at ($(fl)+(-0.45,-0.42)$) {fundus farthest from every crown:
-  $\rho_C=\foldRhoC$\,mm${}>r$. No sheet with a footprint below $\rho_C$
-  sees it, whatever its pitch};
+  (flnote) at ($(fl)+(-0.45,-0.42)$) {fundus farthest from the crowns, $\rho_C=\foldRhoC$\,mm${}>r$ from
+  the nearest: no sheet with a smaller footprint sees it, at any pitch};
 \draw[ann] (flnote.east) ++(-0.05,0) -- (fl);
 
 % ================================================================= (b)

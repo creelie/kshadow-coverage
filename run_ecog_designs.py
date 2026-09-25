@@ -13,8 +13,9 @@ being the distance to the triangle's farthest vertex,
 
 and then X lies in the k-fold region exactly when rho_k(P) < r.  The vertex
 covering radius stored in results/optimal.json (rho_mm, kfold_rho_mm) is
-never larger, and exceeds this one by at most the longest edge of X, so it can
-fall below r while a triangle is still unseen; that is why 64 placed contacts
+never larger, and falls short of this one by at most the longest edge l of X
+(rho^v <= rho <= rho^v + l), so it can fall below r while a triangle is still
+unseen; that is why 64 placed contacts
 have a vertex radius of 6.99 mm and still leave 1.0 mm^2 unseen at r = 8 mm.
 
 This script computes, all on the triangle rule:
@@ -24,12 +25,12 @@ This script computes, all on the triangle rule:
   * the fewest contacts of that sequence with X inside R_1, scanned one
     contact at a time, at r = 8, 9, 10, 12, 14 mm, and the fewest with X
     inside R_2, with the certificate of each design (run_optimal.certificate);
-  * the site floor of the gyral crowns, over every gyral vertex of the
-    hemisphere that can reach X (not only those inside X), for k = 1 and 2,
-    and the same on the vertex rule for comparison;
-  * a crown-only sequence: at each step the admissible crown site with the
-    smallest e(c, T*) to the worst covered triangle T* is added, with its
-    covering radii, which level off at the site floor.
+  * the site floor of the gyral crowns, over every crown vertex within 25 mm
+    of X (not only those inside X), for k = 1 and 2, and the same on the
+    vertex rule for comparison;
+  * a crown-only sequence: at each step the crown site with the smallest
+    e(c, T*) to the worst covered triangle T* is added, distances exact, with
+    its covering radii, which level off at the site floor.
 
 Writes results/ecog_designs.json.  A few minutes.
 """
@@ -135,7 +136,8 @@ for k in (1, 2):
 out['designs'] = designs
 
 # ------------------------------------------------ the site floor of the crowns
-reach = np.flatnonzero((R.SULC < 0) & (R.d_a <= R.PATCH_MM + REACH))
+d_X = dijkstra(R.G, directed=False, indices=R.PVf, min_only=True, limit=REACH + 1.0)
+reach = np.flatnonzero((R.SULC < 0) & (d_X <= REACH))
 inside = np.flatnonzero((R.SULC < 0) & np.isin(np.arange(R.NV), R.PVf))
 E_c = tri_dist(reach, limit=REACH)
 part = np.partition(E_c, 1, axis=0)
@@ -157,12 +159,22 @@ print('crown floor: triangle rule %.3f (k=2: %.3f); vertex rule, all crowns %.3f
       flush=True)
 
 # ------------------------------------------------ a crown-only sequence
+# e(c, T) for the chosen sites is exact (no distance limit), so the worst
+# covered triangle is well defined from the first step; the site chosen for
+# it comes from E_c, which is exact there because the best site of every
+# triangle is within its floor, below REACH.
 NMAX = 160
+
+
+def exact_row(c):
+    return dijkstra(R.G, directed=False, indices=[c])[0][TX].max(axis=1)
+
+
 chosen = [int(reach[np.argmin(R.d_a[reach])])]
-m1 = E_c[np.searchsorted(reach, chosen[0])].copy()
+m1 = exact_row(chosen[0])
 m2 = np.full(len(TX), np.inf)
 c1, c2 = [float(m1.max())], [None]
-col = {int(v): i for i, v in enumerate(reach)}
+rows_exact = [m1.copy()]
 floor_n = None
 while len(chosen) < NMAX:
     # triangles already at their own floor f1 cannot be improved; take the
@@ -176,7 +188,8 @@ while len(chosen) < NMAX:
     worst = int(np.flatnonzero(open_)[np.argmax(m1[open_])])
     c = int(reach[np.argmin(E_c[:, worst])])
     chosen.append(c)
-    row = E_c[col[c]]
+    row = exact_row(c)
+    rows_exact.append(row)
     m2 = np.minimum(m2, np.maximum(m1, row))
     m1 = np.minimum(m1, row)
     c1.append(float(m1.max()))
@@ -189,12 +202,22 @@ out['crown'] = dict(rule='add the admissible crown site with the smallest e(c,T)
                     centres=chosen, rho1_mm=[round(x, 4) for x in c1],
                     rho2_mm=[None if x is None else round(x, 4) for x in c2],
                     reaches_floor_at=floor_n,
-                    unseen_mm2_r8_at_64=(unseen(E_c[[col[c] for c in chosen]], 64, 1, 8.0)
+                    unseen_mm2_r8_at_64=(unseen(np.array(rows_exact), 64, 1, 8.0)
                                          if len(chosen) >= 64 else None))
 print('crown sequence: %d sites, rho_1 reaches the floor %.3f at n=%s; '
       'unseen at r=8 with 64: %s  [%.0f s]'
       % (len(chosen), f1.max(), floor_n, out['crown']['unseen_mm2_r8_at_64'],
          time.time() - t0), flush=True)
 
-json.dump(out, open(RES / 'ecog_designs.json', 'w'), indent=1)
+def _finite(o):
+    if isinstance(o, float) and not np.isfinite(o):
+        return None
+    if isinstance(o, dict):
+        return {k: _finite(v) for k, v in o.items()}
+    if isinstance(o, list):
+        return [_finite(v) for v in o]
+    return o
+
+
+json.dump(_finite(out), open(RES / 'ecog_designs.json', 'w'), indent=1)
 print('wrote results/ecog_designs.json')

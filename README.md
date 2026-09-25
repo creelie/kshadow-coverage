@@ -41,10 +41,14 @@ footprint radius:
 Same target, same footprint radius, nearly the same contact count. What
 separates them is where the contacts sit.
 
-Contacts confined to gyral crowns cannot reach this at any count. Take every
-one of the 3016 gyral vertices of the patch as a contact and some point of
-cortex is still 12.219 mm from all of them, so no array on the envelope of
-the hemisphere with a smaller footprint covers the patch at all.
+Contacts confined to gyral crowns cannot reach this at any count. Counting
+every gyral crown within 25 mm of the patch (7279 crown vertices), some point
+of the patch is 10.94 mm from its nearest crown, and on the triangle rule some
+triangle has no crown within 11.24 mm of all three of its vertices, so no
+crown-only array covers the patch at a footprint radius of 11.24 mm or less,
+at any contact count. (Counting only the 3016 gyral vertices inside the patch
+gives 12.219 mm, the figure in `paper/kshadow_natphys.tex`; a sheet's contacts
+are not confined to those.)
 
 112 contacts at a 9 mm radius see every point of the patch twice, by direct
 computation on the mesh. The certificate gives Δ₁(N) and Δ₂(N) both (1, 0),
@@ -208,7 +212,7 @@ footprint:
 | design | covering radius | patch unseen | 5 mm onset zone seen whole |
 |---|---|---|---|
 | documented 8x8 grid, 64 contacts | 21.96 mm | 2082.0 mm² | 18.5% of positions |
-| 64 crown contacts | 11.24 mm | 100.5 mm² | 70.5% |
+| 64 crown contacts | 11.24 mm | 89.7 mm² | 82.6% |
 | 64 contacts by covering radius | 8.12 mm | 1.0 mm² | 98.1% |
 | 66 contacts by covering radius | 7.77 mm | 0 | 100% |
 

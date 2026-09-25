@@ -104,6 +104,10 @@ def dist_to(tri_idx, limit=np.inf):
 
 # distance to the outside of X, for admissibility
 D_OUT = dist_to(np.flatnonzero(~inX_t), limit=80.0)
+# the same from the vertices of X to the vertices outside X, on the edge graph
+_inX_v = np.zeros(R.NV, bool); _inX_v[R.PVf] = True
+V_OUT = dijkstra(R.G, directed=False, indices=np.flatnonzero(~_inX_v),
+                 min_only=True, limit=80.0)[R.PVf]
 
 
 def fractions(d_avoid, s_grid):
@@ -143,6 +147,10 @@ def run(name, label, centres, r, k_built):
     # the largest onset zone that can be missed entirely: L(s) > 0 exactly
     # when some triangle has both distances above s
     rec['largest_hidden_s_mm'] = round(float(np.minimum(d_seen, D_OUT).max()), 2)
+    # the lower bound of Proposition 4(2), max over x of min(d_1(x,P) - r,
+    # d(x, outside X)), evaluated at the vertices of X on the edge graph
+    d1 = dijkstra(R.G, directed=False, indices=centres, min_only=True)[R.PVf]
+    rec['hide_bound_mm'] = round(float(np.minimum(d1 - r, V_OUT).max()), 2)
     rec['seconds'] = round(time.time() - t0, 1)
     print('%-12s n=%3d r=%4.1f rho1 %6.2f rho2 %6.2f unseen %7.1f  W1(5) %.3f  '
           'W2(5) %.3f  L(5) %.3f  h %.1f'
