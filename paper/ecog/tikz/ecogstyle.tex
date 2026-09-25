@@ -1,0 +1,74 @@
+% ecogstyle.tex -- colours, fonts and plot defaults shared by every figure of
+% ecog_coverage.tex.  \input by each standalone figure in this directory.
+%
+% Colour roles (validated as one categorical palette: adjacent and all-pairs
+% CVD separation >= 9, normal-vision separation >= 16; aqua sits below 3:1
+% against white, so every aqua mark also carries a marker and a direct label):
+%   cBlue    contacts placed by covering radius, single coverage (k = 1)
+%   cOrange  the documented 8x8 subdural grid
+%   cAqua    contacts restricted to gyral crowns (what a sheet can reach)
+%   cViolet  contacts placed by covering radius, double coverage (k = 2)
+%   cRed     cortex no contact sees; an onset zone that is missed
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,shapes.misc,
+  calc,fit,backgrounds,decorations.pathreplacing,patterns,shadows}
+\usepgfplotslibrary{fillbetween,groupplots}
+
+\definecolor{cBlue}{HTML}{2A78D6}
+\definecolor{cOrange}{HTML}{EB6834}
+\definecolor{cAqua}{HTML}{1BAF7A}
+\definecolor{cViolet}{HTML}{4A3AA7}
+\definecolor{cRed}{HTML}{E34948}
+\definecolor{cInk}{HTML}{0B0B0B}
+\definecolor{cInk2}{HTML}{52514E}
+\definecolor{cMuted}{HTML}{8A8983}
+\definecolor{cGrid}{HTML}{E4E3DF}
+\definecolor{cSurface}{HTML}{FCFCFB}
+\definecolor{cWash}{HTML}{F3F2EF}
+\definecolor{cCortex}{HTML}{D9CFC4}
+\definecolor{cCortexDark}{HTML}{9C8B7A}
+\definecolor{cBlueLight}{HTML}{CDE2FB}
+\definecolor{cBlueMid}{HTML}{86B6EF}
+
+\pgfplotsset{
+  ecog/.style={
+    width=7.2cm, height=5.4cm,
+    axis line style={cInk2, line width=0.5pt},
+    tick style={cInk2, line width=0.5pt},
+    major tick length=3pt,
+    grid=major,
+    grid style={cGrid, line width=0.4pt, solid},
+    tick label style={font=\footnotesize, text=cInk2},
+    label style={font=\small, text=cInk},
+    title style={font=\small\bfseries, text=cInk, align=center},
+    legend style={font=\footnotesize, draw=none, fill=white,
+      fill opacity=0.9, text opacity=1, text=cInk,
+      row sep=1pt, inner sep=2pt},
+    legend cell align=left,
+    every axis plot/.append style={line width=1.4pt, line join=round,
+      line cap=round},
+    axis background/.style={fill=white},
+    clip marker paths=true,
+  },
+  mk/.style={mark=*, mark size=2.1pt,
+    mark options={solid, draw=white, line width=0.6pt}},
+  mksq/.style={mark=square*, mark size=2.0pt,
+    mark options={solid, draw=white, line width=0.6pt}},
+  mktri/.style={mark=triangle*, mark size=2.6pt,
+    mark options={solid, draw=white, line width=0.6pt}},
+  mkdia/.style={mark=diamond*, mark size=2.7pt,
+    mark options={solid, draw=white, line width=0.6pt}},
+}
+
+% panel letters
+\newcommand{\panel}[1]{\textbf{\sffamily (#1)}}
+\tikzset{
+  panellabel/.style={font=\small\bfseries\sffamily, text=cInk,
+    anchor=north west, inner sep=0pt},
+  note/.style={font=\footnotesize, text=cInk2, align=center},
+}

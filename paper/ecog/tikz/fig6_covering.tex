@@ -1,0 +1,56 @@
+% fig6_covering.tex -- covering radius against contact count on the target
+% patch of the colin27 template.  Data: results/optimal.json and
+% results/soz_capture.json, via make_ecog_paper_data.py.
+\documentclass[tikz,border=4pt]{standalone}
+\input{ecogstyle}
+\input{../numbers_ecog.tex}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[ecog,
+  width=12.5cm, height=7.4cm,
+  xmin=0, xmax=162, ymin=0, ymax=36,
+  xtick={0,20,...,160}, ytick={0,5,...,35},
+  xlabel={contacts $n$},
+  ylabel={covering radius of $X$ (mm)},
+  legend pos=north east,
+  legend style={at={(0.985,0.975)}},
+]
+  % footprint radii used below, as recessive reference lines
+  \addplot[cMuted, line width=0.5pt, dash pattern=on 1pt off 2pt, forget plot]
+    coordinates {(0,8) (162,8)};
+  \addplot[cMuted, line width=0.5pt, dash pattern=on 1pt off 2pt, forget plot]
+    coordinates {(0,10) (162,10)};
+  \node[font=\scriptsize, text=cInk2, anchor=south east] at (axis cs:161,8) {$r=8$};
+  \node[font=\scriptsize, text=cInk2, anchor=south east] at (axis cs:161,10) {$r=10$};
+  % crown floor
+  \addplot[cAqua!70!black, line width=0.8pt, dash pattern=on 4pt off 2pt, forget plot]
+    coordinates {(0,\crownFloorExact) (162,\crownFloorExact)};
+
+  \addplot[cAqua, line width=1.6pt] table[x=n, y=rho] {data/rho_crown.dat};
+  \addlegendentry{sites on gyral crowns only, $\rho_1$}
+  \addplot[cBlue, line width=1.6pt] table[x=n, y=rho] {data/rho_free.dat};
+  \addlegendentry{sites anywhere on $X$, $\rho_1$}
+  \addplot[cViolet, line width=1.6pt, mksq] table[x=n, y=rho] {data/rho2_free.dat};
+  \addlegendentry{sites anywhere on $X$, $\rho_2$ (seen twice)}
+  \addplot[only marks, mark=*, mark size=3.4pt, cOrange,
+    mark options={draw=white, line width=0.9pt}]
+    coordinates {(64,\capRhoOneGridEight)};
+  \addlegendentry{documented $8\times8$ grid, $\rho_1$}
+
+  % direct labels
+  \node[font=\footnotesize, text=cInk, anchor=west, align=left]
+    at (axis cs:67,\capRhoOneGridEight) {$8\times8$ grid: $\rho_1=\capRhoOneGridEight$\,mm};
+  \node[font=\footnotesize, text=cInk, anchor=south east, align=right]
+    at (axis cs:160,\crownFloorExact) {crown floor $\rho_C=\crownFloorExact$\,mm};
+  \draw[-{Stealth[length=5pt]}, line width=0.6pt, cInk2]
+    (axis cs:88,3.3) node[anchor=east, font=\footnotesize, text=cInk] {64 placed: $\rho_1=\rhoFreeSixtyFour$\,mm}
+    -- (axis cs:64,\rhoFreeSixtyFour);
+  \addplot[only marks, mark=*, mark size=2.4pt, cBlue,
+    mark options={draw=white, line width=0.8pt}, forget plot]
+    coordinates {(64,\rhoFreeSixtyFour)};
+  \addplot[only marks, mark=*, mark size=2.4pt, cAqua,
+    mark options={draw=white, line width=0.8pt}, forget plot]
+    coordinates {(64,\rhoCrownSixtyFour)};
+\end{axis}
+\end{tikzpicture}
+\end{document}

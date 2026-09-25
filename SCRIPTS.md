@@ -231,3 +231,29 @@ All scripts are deterministic (fixed random seeds where randomness is used)
 and were re-run in full for this version of the paper; every number quoted in
 the manuscript is read directly from the `results/*.json` files this
 reproduce sequence regenerates.
+
+## ECoG coverage paper (`paper/ecog/`)
+- `run_soz_capture.py`  onset-zone capture on the target patch of
+  `run_optimal.py`: for eight designs (the documented 8x8 grid, 64 crown
+  contacts, and contact sets placed by covering radius at 8, 9 and 10 mm),
+  the share of positions in which an onset zone of geodesic radius s is seen
+  whole, seen twice, or missed entirely, for s from 0 to 15 mm; the largest
+  onset zone that can be missed; the covering radii rho_1 and rho_2; and the
+  share still seen whole after q = 1..8 contacts fail at random (100 draws,
+  fixed seeds). Reads `results/optimal.json` and `results/cortex.json`, writes
+  `results/soz_capture.json`. About twenty seconds.
+- `make_ecog_paper_data.py`  writes `paper/ecog/numbers_ecog.tex`, one macro
+  per number quoted in `paper/ecog/ecog_coverage.tex`, the plot tables in
+  `paper/ecog/tikz/data/`, and `paper/ecog/figures/fig5_cortex.png` (the two
+  surface renders of `figures/fig_optimal.png`).
+- `paper/ecog/tikz/fold_geometry.py`  the schematic cross-section of Fig. 3,
+  exact in arc length; writes `paper/ecog/tikz/data/fold_*`.
+- `paper/ecog/tikz/fig*.tex`  the TikZ/pgfplots sources of Figs. 1-4 and 6-9,
+  sharing `ecogstyle.tex`; `paper/ecog/build.sh` renders each to
+  `paper/ecog/figures/*.png` at 600 dpi and then builds the PDF.
+
+Reproduce:
+
+    python3 run_soz_capture.py
+    python3 make_ecog_paper_data.py
+    cd paper/ecog && ./build.sh          # figures, then ecog_coverage.pdf
