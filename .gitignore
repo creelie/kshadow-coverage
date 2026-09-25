@@ -28,3 +28,6 @@ _ds003775_epochs/
 
 # TikZ figure build products of paper/ecog (figures/*.png are kept)
 paper/ecog/tikz/build/
+
+# Lean build products (lean/ is rebuilt with `lake build`)
+lean/.lake/
