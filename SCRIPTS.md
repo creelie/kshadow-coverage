@@ -233,15 +233,31 @@ the manuscript is read directly from the `results/*.json` files this
 reproduce sequence regenerates.
 
 ## ECoG coverage paper (`paper/ecog/`)
-- `run_soz_capture.py`  onset-zone capture on the target patch of
-  `run_optimal.py`: for eight designs (the documented 8x8 grid, 64 crown
-  contacts, and contact sets placed by covering radius at 8, 9 and 10 mm),
-  the share of positions in which an onset zone of geodesic radius s is seen
-  whole, seen twice, or missed entirely, for s from 0 to 15 mm; the largest
-  onset zone that can be missed; the covering radii rho_1 and rho_2; and the
-  share still seen whole after q = 1..8 contacts fail at random (100 draws,
-  fixed seeds). Reads `results/optimal.json` and `results/cortex.json`, writes
-  `results/soz_capture.json`. About twenty seconds.
+Everything here is on the triangle rule of `run_optimal.py`: a triangle lies in
+a contact's footprint when all three of its vertices are within r of it. The
+matching covering radius is taken over triangles, e(p, T) being the distance
+from p to the farthest vertex of T, and X is covered k times exactly when the
+k-th covering radius is below r.
+
+- `run_ecog_designs.py`  the triangle covering radii rho_1 and rho_2 of every
+  prefix of the farthest-point sequence of `results/optimal.json`; the fewest
+  contacts that see the patch once and twice at 8, 9, 10, 12 and 14 mm,
+  scanned one contact at a time, with the certificate of each design; the
+  site floor of the gyral crowns over every crown vertex within 25 mm of the
+  patch (and, for comparison, on the vertex rule, over all crowns and over the
+  crowns inside the patch only); and a crown-only sequence that adds the crown
+  site closest to the worst covered triangle. Writes
+  `results/ecog_designs.json`. About five minutes.
+- `run_soz_capture.py`  onset-zone capture: for the documented 8x8 grid, 64
+  crown contacts, 64 placed contacts and the fewest placed contacts that see
+  the patch once and twice at 8 and 10 mm, the share of positions in which an
+  onset zone of radius s is seen whole, seen twice or missed entirely, for s
+  from 0 to 15 mm, with triangles as the atoms and zones measured between
+  triangle centroids; the largest onset zone that can be missed; the covering
+  radii; and the share still seen whole after q in {1, 2, 3, 4, 6, 8}
+  contacts fail at random (100 draws each, fixed seeds). Reads
+  `results/ecog_designs.json` and `results/cortex.json`, writes
+  `results/soz_capture.json`. About a minute.
 - `make_ecog_paper_data.py`  writes `paper/ecog/numbers_ecog.tex`, one macro
   per number quoted in `paper/ecog/ecog_coverage.tex`, the plot tables in
   `paper/ecog/tikz/data/`, and `paper/ecog/figures/fig5_cortex.png` (the two
@@ -254,6 +270,7 @@ reproduce sequence regenerates.
 
 Reproduce:
 
+    python3 run_ecog_designs.py
     python3 run_soz_capture.py
     python3 make_ecog_paper_data.py
     cd paper/ecog && ./build.sh          # figures, then ecog_coverage.pdf

@@ -1,6 +1,7 @@
-% fig7_designs.tex -- (a) how few contacts cover the target, against the
-% packing lower bound; (b) the same 64 contacts, two placements.
-% Data: results/optimal.json via make_ecog_paper_data.py.
+% fig7_designs.tex -- (a) the fewest contacts of the placed sequence that see
+% the target once and twice, against the packing lower bound; (b) the same 64
+% contacts, two placements.  Data: results/ecog_designs.json and
+% results/optimal.json via make_ecog_paper_data.py.
 \documentclass[tikz,border=4pt]{standalone}
 \input{ecogstyle}
 \input{../numbers_ecog.tex}
@@ -12,37 +13,37 @@
 ]
 % ---------------------------------------------------------------- (a)
 \nextgroupplot[
-  xmin=7.4, xmax=14.6, ymin=0, ymax=122,
-  xtick={8,9,...,14}, ytick={0,20,...,120},
+  xmin=7.4, xmax=14.6, ymin=0, ymax=150,
+  xtick={8,9,...,14}, ytick={0,25,...,150},
   xlabel={footprint radius $r$ (mm)},
-  ylabel={contacts},
+  ylabel={fewest contacts},
   legend style={at={(0.5,-0.24)}, anchor=north},
 ]
   % region where no crown-only array covers X at any count
-  \fill[cAqua, fill opacity=0.10] (axis cs:7.4,0) rectangle (axis cs:\crownFloorExact,122);
+  \fill[cAqua, fill opacity=0.10] (axis cs:7.4,0) rectangle (axis cs:\crownFloor,150);
   \draw[cAqua!70!black, line width=0.8pt, dash pattern=on 4pt off 2pt]
-    (axis cs:\crownFloorExact,0) -- (axis cs:\crownFloorExact,122);
+    (axis cs:\crownFloor,0) -- (axis cs:\crownFloor,150);
   \node[font=\scriptsize, text=cInk, align=center, fill=white, fill opacity=0.8,
     text opacity=1, inner sep=2pt]
-    at (axis cs:11.05,78) {left of $\rho_C$: no\\crown-only array\\covers $X$ at\\any count};
+    at (axis cs:12.95,118) {right of $\rho_C$ only:\\crown-only arrays\\can cover $X$};
 
-  \addplot[cBlue, line width=1.6pt, mk] table[x=r, y=n] {data/min_design.dat};
-  \addlegendentry{fewest placed contacts, $X\subseteq R_1$}
-  \addplot[cViolet, only marks, mksq, mark size=2.8pt]
-    coordinates {(9,\dblBN) (10,\dblAN)};
-  \addlegendentry{placed contacts, $X$ seen twice}
+  \addplot[cViolet, line width=1.6pt, mksq] table[x=r, y=n2] {data/min_design.dat};
+  \addlegendentry{$X$ seen twice ($\rho_2<r$)}
+  \addplot[cBlue, line width=1.6pt, mk] table[x=r, y=n1] {data/min_design.dat};
+  \addlegendentry{$X$ seen once ($\rho_1<r$)}
   \addplot[cInk2, line width=1.0pt, dash pattern=on 3pt off 2pt, mktri,
     mark options={solid, fill=cInk2, draw=white}]
-    table[x=r, y=bound] {data/packing.dat};
-  \addlegendentry{packing lower bound}
+    table[x=r, y=bound] {data/min_design.dat};
+  \addlegendentry{packing lower bound, once}
   % direct labels at the designs
   \addplot[draw=none, forget plot, nodes near coords, point meta=y,
     nodes near coords style={font=\scriptsize, text=cInk, anchor=south west, inner sep=2pt},
     every node near coord/.append style={/pgf/number format/.cd, fixed, precision=0}]
-    table[x=r, y=n] {data/min_design.dat};
+    table[x=r, y=n1] {data/min_design.dat};
   \addplot[draw=none, forget plot, nodes near coords, point meta=y,
-    nodes near coords style={font=\scriptsize, text=cInk, anchor=west, inner sep=4pt}]
-    coordinates {(9,\dblBN) (10,\dblAN)};
+    nodes near coords style={font=\scriptsize, text=cInk, anchor=south west, inner sep=2pt},
+    every node near coord/.append style={/pgf/number format/.cd, fixed, precision=0}]
+    table[x=r, y=n2] {data/min_design.dat};
 
 % ---------------------------------------------------------------- (b)
 \nextgroupplot[

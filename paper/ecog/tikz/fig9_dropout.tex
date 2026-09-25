@@ -27,19 +27,19 @@
 ]
 \nextgroupplot[title={onset zone of radius $s=5$\,mm},
   ylabel={seen whole by the survivors (\%)}]
-  \dplot{cOrange, mark=*, mark size=1.8pt, mark options={solid, draw=white}}{grid64_r8}{5}{$8\times8$ grid, 64, $r=8$\,mm}
-  \dplot{cAqua, mk}{crown64_r8}{5}{crown sites, 64, $r=8$\,mm}
-  \dplot{cBlue, mk}{free66_r8}{5}{placed, 66, $r=8$\,mm ($k=1$)}
-  \dplot{cBlue, dash pattern=on 4pt off 2pt, mkdia}{free46_r10}{5}{placed, 46, $r=10$\,mm ($k=1$)}
-  \dplot{cViolet, dash pattern=on 4pt off 2pt, mktri}{free96_r10}{5}{placed, 96, $r=10$\,mm ($k=2$)}
-  \dplot{cViolet, mksq}{free112_r9}{5}{placed, 112, $r=9$\,mm ($k=2$)}
+  \dplot{cOrange, mark=*, mark size=1.8pt, mark options={solid, draw=white}}{GridEight}{5}{$8\times8$ grid, 64, $r=8$\,mm}
+  \dplot{cAqua, mk}{CrownEight}{5}{crown sites, 64, $r=8$\,mm}
+  \dplot{cBlue, mk}{OneEight}{5}{placed, \capNOneEight, $r=8$\,mm ($k=1$)}
+  \dplot{cBlue, dash pattern=on 4pt off 2pt, mkdia}{OneTen}{5}{placed, \capNOneTen, $r=10$\,mm ($k=1$)}
+  \dplot{cViolet, mksq}{TwoEight}{5}{placed, \capNTwoEight, $r=8$\,mm ($k=2$)}
+  \dplot{cViolet, dash pattern=on 4pt off 2pt, mktri}{TwoTen}{5}{placed, \capNTwoTen, $r=10$\,mm ($k=2$)}
 \nextgroupplot[title={onset zone of radius $s=10$\,mm}]
-  \dplot{cOrange, mark=*, mark size=1.8pt, mark options={solid, draw=white}}{grid64_r8}{10}{}
-  \dplot{cAqua, mk}{crown64_r8}{10}{}
-  \dplot{cBlue, mk}{free66_r8}{10}{}
-  \dplot{cBlue, dash pattern=on 4pt off 2pt, mkdia}{free46_r10}{10}{}
-  \dplot{cViolet, dash pattern=on 4pt off 2pt, mktri}{free96_r10}{10}{}
-  \dplot{cViolet, mksq}{free112_r9}{10}{}
+  \dplot{cOrange, mark=*, mark size=1.8pt, mark options={solid, draw=white}}{GridEight}{10}{}
+  \dplot{cAqua, mk}{CrownEight}{10}{}
+  \dplot{cBlue, mk}{OneEight}{10}{}
+  \dplot{cBlue, dash pattern=on 4pt off 2pt, mkdia}{OneTen}{10}{}
+  \dplot{cViolet, mksq}{TwoEight}{10}{}
+  \dplot{cViolet, dash pattern=on 4pt off 2pt, mktri}{TwoTen}{10}{}
   \legend{}
 \end{groupplot}
 \node[panellabel] at ($(group c1r1.north west)+(-1.3,0.6)$) {(a)};

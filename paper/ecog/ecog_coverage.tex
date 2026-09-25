@@ -65,27 +65,31 @@ electrode placement, covering radius, $k$-fold coverage, nerve theorem}
 \begin{abstract}
 Resective surgery can free a patient with drug-resistant focal epilepsy from
 seizures. When an intracranial recording guides it, the resection can only be
-planned around what the recording's contacts have seen. We treat the placement of the recording contacts as
-an optimisation problem on the patient's cortical surface: every point of the
-territory suspected of generating the seizures should lie within a footprint
-radius $r$ of at least $k$ contacts, measured along the folded surface. This
-holds exactly when the $k$-th covering radius $\rho_k$ of the territory is
-below $r$. An onset zone of any size and position inside the territory is then
-seen whole, and it stays seen whole after any $k-1$ contacts fail. On a
-$\patchArea$\,mm$^2$ parietal territory of the colin27 template brain, the
-documented $8\times8$ subdural grid leaves $\gridUnseenPctEight\%$ of the
-territory unseen at $r=8$\,mm, and an onset zone of radius up to
-$\capHiddenGridEight$\,mm can lie in it and be missed entirely. The same 64
-contacts placed by covering radius leave $\greedyUnseenEight$\,mm$^2$ unseen,
-and $\minNEight$ contacts leave nothing. A contact array confined to the gyral
-crowns, as a subdural sheet is, cannot reach this at any contact count: some
-point of the territory is $\crownFloorExact$\,mm from every crown. After $\dropQmax$
-random contact failures, double coverage ($\dblBN$ contacts at $9$\,mm) still
-sees a $5$\,mm onset zone whole in $\dropMinFreeOneTwelve\%$ of its possible
-positions on average, where single coverage falls to
-$\dropMeanEightFreeSixtySix\%$. Complete coverage is what lets a resection
-planned on the recording contain the onset zone by design; it is not
-sufficient for seizure freedom, and this paper reports no patient outcome. We state the protocol that would test it.
+planned around what the recording's contacts have seen. We treat the placement
+of the recording contacts as an optimisation problem on the patient's cortical
+surface: every point of the territory suspected of generating the seizures
+should lie within a footprint radius $r$ of at least $k$ contacts, measured
+along the folded surface. This holds exactly when the $k$-th covering radius
+$\rho_k$ of the territory is below $r$, and on a triangulated surface it stays
+exact when the covering radius is taken over triangles. An onset zone of any
+size and position inside the territory is then seen whole, and it stays seen
+whole after any $k-1$ contacts fail. On a $\patchArea$\,mm$^2$ parietal
+territory of the colin27 template brain, the documented $8\times8$ subdural
+grid leaves $\gridUnseenPctEight\%$ of the territory unseen at $r=8$\,mm, and
+an onset zone of radius up to $\capHiddenGridEight$\,mm can lie in it and be
+missed entirely. The same 64 contacts placed by covering radius leave
+$\greedyUnseenEight$\,mm$^2$ unseen, and $\minNOneEight$ contacts leave
+nothing. Contacts confined to the gyral crowns, where a subdural sheet puts
+them, cannot reach this at any contact count: counting every crown within
+reach, some part of the territory is $\crownFloor$\,mm from its nearest crown.
+Covering the territory twice takes $\minNTwoEight$ contacts at $8$\,mm. After
+$\dropQmax$ random contact failures these still see a $5$\,mm onset zone whole
+in $\dropMeanEightTwoEight\%$ of its possible positions on average, where the
+$\minNOneEight$ contacts of single coverage fall to
+$\dropMeanEightOneEight\%$. Complete coverage is what lets a resection planned
+on the recording contain the onset zone by design; it is not sufficient for
+seizure freedom, and this paper reports no patient outcome. We state the
+protocol that would test it.
 \end{abstract}
 
 \maketitle
@@ -98,13 +102,13 @@ Epilepsy is drug-resistant when two appropriately chosen and tolerated
 antiseizure medications have failed~\cite{Kwan2010}, and a substantial
 minority of patients reach that point~\cite{KwanBrodie2000}. For focal
 drug-resistant epilepsy, resective surgery is the treatment that can end the
-seizures: in randomised trials it outperformed continued medical
-therapy~\cite{Wiebe2001,Engel2012}, and seizure freedom, Engel class~I or ILAE
-class~1~\cite{Engel1993,Wieser2001}, is its stated goal~\cite{JobstCascino2015}.
-Surgery aims at the epileptogenic zone, the cortex whose removal is needed
-for seizure freedom, and when intracranial recording is needed, a central
-estimate of it is the seizure onset zone that recording
-shows~\cite{RosenowLuders2001}.
+seizures. For temporal lobe epilepsy, randomised trials found it better than
+continued medical therapy~\cite{Wiebe2001,Engel2012}. Its stated goal is
+freedom from disabling seizures (Engel class~I) or from all seizures (ILAE
+class~1)~\cite{Engel1993,Wieser2001,JobstCascino2015}. Surgery aims at the
+epileptogenic zone, the cortex whose removal is needed for seizure freedom,
+and when intracranial recording is needed, a central estimate of it is the
+seizure onset zone that recording shows~\cite{RosenowLuders2001}.
 
 When the non-invasive evaluation (semiology, scalp video-EEG, MRI, PET, SPECT,
 MEG) does not settle where seizures begin, contacts are implanted: subdural
@@ -112,10 +116,13 @@ grids and strips for electrocorticography (ECoG), or depth leads for
 stereo-EEG~\cite{Jayakar2016,ParviziKastner2018}. The implantation is
 hypothesis driven. It samples a territory $X$ that the evaluation says should
 contain the onset zone, and what it does not sample it cannot localise
-(Fig.~\ref{fig:pathway}). An onset zone that falls between contacts is missed or
-truncated, and the resection is then planned around a false or partial
-picture, or not at all. Larger implantations carry more risk~\cite{Hamer2002,Mullin2016}, so the
-number of contacts cannot simply be raised until nothing is missed.
+(Fig.~\ref{fig:pathway}). An onset zone that falls between contacts is missed
+or truncated, and the resection is then planned around a false or partial
+picture, or not at all. Invasive monitoring carries risk: for subdural grids,
+complications have been associated with the number of
+electrodes~\cite{Hamer2002}, and stereo-EEG has its own complication
+profile~\cite{Mullin2016}. The number of contacts cannot simply be raised
+until nothing is missed.
 
 \begin{figure}[t]
 \centering
@@ -132,19 +139,20 @@ monitoring leave every onset zone in $X$ seen whole
 \label{fig:pathway}
 \end{figure}
 
-This paper asks a narrow question and answers it exactly: given the patient's
-cortical surface, the territory $X$, and a radius $r$ within which a contact is
-credited with recording an onset, where should $n$ contacts go so that every
-point of $X$ is seen at least $k$ times, and how small can $n$ be? The answer
-turns on one number, the $k$-th covering radius of $X$ measured along the folded
-surface (Section~\ref{sec:model}). It gives three things a clinician can use
-before implantation. First, a guarantee: when the covering radius is below
-$r$, an onset zone of any size and position in $X$ is seen whole, and stays
-seen whole after any $k-1$ contacts fail. Second, a design rule that meets
-that guarantee with close to the fewest contacts. Third, an obstruction:
-contacts confined to the gyral crowns, as on a subdural sheet, cannot meet the
-guarantee below a radius that is fixed by the folding and not by the number
-of contacts.
+This paper asks a narrow question and answers it exactly on the triangulated
+surface: given the patient's cortical surface, the territory $X$, and a radius
+$r$ within which a contact is credited with recording an onset, where should
+$n$ contacts go so that every point of $X$ is seen at least $k$ times, and how
+small can $n$ be? The answer turns on one number, the $k$-th covering radius of
+$X$ measured along the folded surface (Section~\ref{sec:model}). It gives
+three things a clinician can use before implantation. First, a guarantee: when
+the covering radius is below $r$, an onset zone of any size and position in
+$X$ is seen whole, and stays seen whole after any $k-1$ contacts fail. Second,
+a design rule that meets the guarantee; for single coverage with sites anywhere
+on $X$ it is provably within a factor of two of the best covering radius for
+its contact count. Third, an obstruction: contacts confined to the gyral
+crowns, as on a subdural sheet, cannot meet the guarantee below a radius that
+is fixed by the folding and not by the number of contacts.
 
 We compute all of this on the colin27 template
 brain~\cite{Holmes1998,Oostenveld2011}, where a documented clinical grid
@@ -185,12 +193,12 @@ onset-zone capture and failure analysis of designed arrays.
 \section{Coverage of a territory, and of an onset zone}\label{sec:model}
 % =====================================================================
 
-Let $M$ be the patient's pial surface, a closed triangulated surface, with the
-geodesic distance $\dd$ (shortest paths along the surface). Let $X\subseteq M$
-be the target territory, $C\subseteq M$ the sites a contact may occupy, and
-$P=\{p_1,\dots,p_n\}\subseteq C$ the contacts. A contact sees the points
-within distance $r$ of it along the surface; its footprint is
-$B_i=\{x\in M:\dd(x,p_i)<r\}$. The multiplicity of a point is
+Let $M$ be the patient's pial surface, a closed surface with the geodesic
+distance $\dd$ (the length of the shortest path along the surface). Let
+$X\subseteq M$ be the target territory, a compact region; $C\subseteq M$ the
+sites a contact may occupy; and $P=\{p_1,\dots,p_n\}\subseteq C$ the contacts.
+A contact sees the points within distance $r$ of it along the surface; its
+footprint is $B_i=\{x\in M:\dd(x,p_i)<r\}$. The multiplicity of a point is
 $m(x)=\#\{i:x\in B_i\}$, and the region seen at least $k$ times is
 $R_k=\{x:m(x)\ge k\}$, so that $R_1\supseteq R_2\supseteq\cdots$
 (Fig.~\ref{fig:model}).
@@ -210,20 +218,19 @@ $X\subseteq R_k$ if and only if $\rho_k(P)<r$.
 \begin{proof}
 A point $x$ lies in $R_k$ exactly when at least $k$ contacts are within
 distance less than $r$ of it, that is, when $\dd_k(x,P)<r$. This holds for
-every $x\in X$ exactly when it holds for the maximiser, which exists because
-$X$ is compact (on a mesh, finite).
+every $x\in X$ exactly when it holds for a maximiser of $\dd_k(\cdot,P)$ on
+$X$, which exists because $\dd_k(\cdot,P)$ is continuous and $X$ is compact.
 \end{proof}
 
 So the whole design problem is to push $\rho_k(P)$ below $r$ with as few
-contacts as possible, and $\rho_k$ is computed exactly by Dijkstra's
-algorithm~\cite{Dijkstra1959}, one run per contact.
+contacts as possible.
 
 \subsection*{Onset zones and contact failure}
 An onset zone is a region $Z\subseteq X$ of unknown position. We say $Z$ is
 \emph{seen whole} if $Z\subseteq R_1$, and \emph{missed} if $Z\cap
 R_1=\emptyset$. Contacts fail during monitoring, through lost contact with the
-cortex, noise or artefact, and the question is whether $Z$ is still seen whole by
-the contacts that remain.
+cortex, noise or artefact, and the question is whether $Z$ is still seen whole
+by the contacts that remain.
 
 \begin{proposition}[failure-proof sampling]\label{prop:failure}
 Let $Z\subseteq X$ and $q\ge0$. Every set of at most $q$ failed contacts leaves
@@ -264,14 +271,13 @@ non-invasive tests, $\mu$ is replaced by that prior and nothing else changes.
 
 \begin{proposition}[capture by erosion]\label{prop:erosion}
 $Z_s(x)\subseteq R_k$ if and only if $\dd(x,M\setminus R_k)>s$, and $Z_s(x)\cap
-R_1=\emptyset$ if and only if $\dd(x,R_1)>s$. Consequently:
+R_1=\emptyset$ if and only if $\dd(x,R_1)\ge s$. Consequently:
 \begin{enumerate}
-\item if $X\subseteq R_k$ then $W_k(s)=1$ and $L(s)=0$ for every $s\ge0$;
-conversely $W_k(0)=1$ gives $\mu(X\setminus R_k)=0$, and on a mesh,
-where every vertex carries positive area, $X\subseteq R_k$;
-\item onset zones of every radius below
-$h(P)=\max_{x\in X}\min\{\dd(x,R_1),\,\dd(x,M\setminus X)\}$, and of none
-above it, can be missed entirely, and
+\item if $X\subseteq R_k$ then $W_k(s)=1$ and $L(s)=0$ for every $s\ge0$, and
+$W_k(0)=\mu(X\cap R_k)/\mu(X)$ in general;
+\item with $h(P)=\max_{x\in X}\min\{\dd(x,R_1),\,\dd(x,M\setminus X)\}$, $L(s)>0$
+for every $s<h(P)$ and $L(s)=0$ for every $s>h(P)$: $h(P)$ is the radius of
+the largest onset zone the array can miss entirely. Moreover
 \[
 h(P)\ \ge\ \max_{x\in X}\min\{\dd_1(x,P)-r,\ \dd(x,M\setminus X)\}.
 \]
@@ -279,20 +285,62 @@ h(P)\ \ge\ \max_{x\in X}\min\{\dd_1(x,P)-r,\ \dd(x,M\setminus X)\}.
 \end{proposition}
 
 \begin{proof}
-A closed disk of radius $s$ about $x$ avoids a set $S$ exactly when every
-point of $S$ is farther than $s$ from $x$; take $S=M\setminus R_k$ and
-$S=R_1$. For (1), if $X\subseteq R_k$ every admissible disk lies in $R_k$;
-conversely $W_k(0)=\mu(X\cap R_k)/\mu(X)$. For (2), $L(s)>0$ exactly when some
-$x$ has $\dd(x,R_1)>s$ and $\dd(x,M\setminus X)>s$, that is, when $s<h(P)$. For the bound, if $y\in
-R_1$ then $\dd(y,p)<r$ for some contact $p$, so $\dd(x,y)\ge \dd(x,p)-r\ge
-\dd_1(x,P)-r$.
+The set $M\setminus R_k$ is closed, so it avoids the closed disk $Z_s(x)$
+exactly when its distance from $x$ exceeds $s$. The set $R_1$ is open: if
+$\dd(x,R_1)\ge s$ and some $y\in R_1$ had $\dd(x,y)\le s$, then
+$\dd(x,y)=s$, and points of a shortest path from $x$ to $y$ close to $y$ would
+lie in $R_1$ at distance less than $s$; so $Z_s(x)\cap R_1=\emptyset$ exactly
+when $\dd(x,R_1)\ge s$. The same argument with the open set $M\setminus X$
+shows that $x$ is admissible exactly when $\dd(x,M\setminus X)\ge s$. For (1),
+if $X\subseteq R_k$ every admissible disk lies in $R_k$ and meets $R_1$; and
+$A_0=X$, $Z_0(x)=\{x\}$. For (2), if $s<h(P)$ the set of $x$ with
+$\dd(x,R_1)>s$ and $\dd(x,M\setminus X)>s$ is open, by continuity of both
+distances, and nonempty, so it has positive area, and each of its points is an
+admissible centre whose disk is missed; if $s>h(P)$ no admissible centre has
+$\dd(x,R_1)\ge s$. For the bound, if $y\in R_1$ then $\dd(y,p)<r$ for some
+contact $p$, so $\dd(x,y)\ge\dd(x,p)-r\ge\dd_1(x,P)-r$.
 \end{proof}
 
-Each of $W_k$ and $L$ is therefore one multi-source Dijkstra run, from the
-unseen set or from the seen set, followed by a threshold at each $s$. Part (2)
-turns the covering radius into a clinical statement. An array whose covering
-radius exceeds the footprint by $\delta$ at a point well inside $X$ can miss an
-onset zone of radius about $\delta$ there entirely, whatever else it records.
+Each of $W_k$ and $L$ is therefore one multi-source Dijkstra
+run~\cite{Dijkstra1959}, from the unseen set or from the seen set, followed by
+a threshold at each $s$. Part (2) turns the covering radius into a clinical
+statement: an array whose covering radius exceeds the footprint by $\delta$ at
+a point at least $\delta$ inside $X$ can miss an onset zone of radius about
+$\delta$ there entirely, whatever else it records.
+
+\subsection*{On the triangulated surface}
+Every computation is done on the triangle mesh of the pial surface, and the
+definitions have to be carried over in a way that keeps the propositions
+exact. We take triangles as the atoms. Distances are shortest paths on the
+edge graph of the mesh. The distance from a contact $p$ to a triangle $T$ is
+the distance to its farthest vertex, $e(p,T)=\max_{v\in T}\dd(v,p)$, and $T$
+lies in the footprint of $p$ when $e(p,T)<r$, so that a triangle counts as seen
+only when a single contact sees all of it. $R_k$ is the set of triangles in at
+least $k$ footprints, and the $k$-th covering radius is
+$\rho_k(P)=\max_{T\in X}\bigl(\text{$k$-th smallest of }e(p,T)\text{ over }p\in
+P\bigr)$. The onset zone about a triangle $T_0$ of $X$ is the set of triangles
+whose centroids lie within distance $s$ of the centroid of $T_0$, distances
+now running on the edge graph with every centroid joined to the vertices of
+its triangle; $\mu$ is triangle area. With these definitions
+Propositions~\ref{prop:cover}--\ref{prop:erosion} hold on the mesh with the
+same proofs, reading triangles for points, both conditions of
+Proposition~\ref{prop:erosion} as strict inequalities between finite distances,
+and $W_k(0)=\mu(X\cap R_k)/\mu(X)$ exactly; the lower bound on $h(P)$ is a
+statement about the continuous surface.
+
+The triangle rule is conservative, and the choice matters in practice. The
+vertex covering radius $\rho_k^{\mathrm{v}}(P)=\max_{v\in X}\dd_k(v,P)$, taken
+over the vertices of $X$ alone, satisfies
+\[
+\rho_k^{\mathrm{v}}(P)\ \le\ \rho_k(P)\ \le\ \rho_k^{\mathrm{v}}(P)+\ell,
+\]
+where $\ell$ is the longest edge of $X$ ($\edgeMax$\,mm here, median
+$\edgeMedian$\,mm), because $e(p,T)\le\dd(v,p)+\ell$ for every vertex $v$ of
+$T$. It can therefore fall below $r$ while a triangle is still unseen: 64
+contacts placed by farthest-point sampling have $\rho_1^{\mathrm{v}}=
+\rhoFreeSixtyFourVertex$\,mm but $\rho_1=\rhoFreeSixtyFour$\,mm, and at
+$r=8$\,mm they leave $\greedyUnseenEight$\,mm$^2$ unseen
+(Section~\ref{sec:results}).
 
 \subsection*{The shape of the covered region}
 Where coverage is not complete, its shape matters. A hole in $R_1$, a pocket of
@@ -333,21 +381,25 @@ around it. Every statement in the panel titles was checked numerically.}
 % =====================================================================
 
 A subdural grid is a flat sheet laid on the surface of the brain. Its contacts
-sit on the gyral crowns; the banks and fundi of the sulci can lie a centimetre or more of
-cortex away along the surface, however close they are in a straight line
-(Fig.~\ref{fig:fold}). Three elementary facts make this exact and say what
-can be done instead.
+sit on the gyral crowns; the banks and fundi of the sulci can lie a centimetre
+or more of cortex away along the surface, however close they are in a
+straight line (Fig.~\ref{fig:fold}). Three elementary facts make this exact
+and say what can be done instead. The first holds for any $k$; take $C$ finite
+(on a mesh, a set of vertices) and $P$ a set of distinct sites of $C$.
 
 \begin{proposition}[site floor]\label{prop:sitefloor}
-Put $\rho_C=\max_{x\in X}\min_{c\in C}\dd(x,c)$. Then $\rho_1(P)\ge\rho_C$ for
-every finite $P\subseteq C$. So if $r\le\rho_C$, no array with its contacts in
-$C$ covers $X$, at any number of contacts.
+Put $\rho_C^{(k)}=\max_{x\in X}\dd_k(x,C)$, the distance from $x$ to its $k$-th
+nearest site of $C$, maximised over $X$, and $\rho_C=\rho_C^{(1)}$. Then
+$\rho_k(P)\ge\rho_C^{(k)}$ for every $P\subseteq C$. So if $r\le\rho_C^{(k)}$,
+no array with its contacts in $C$ sees all of $X$ $k$ times, at any number of
+contacts.
 \end{proposition}
 
 \begin{proof}
-Let $x\in X$ attain the maximum defining $\rho_C$. Every $p\in P$ lies in $C$,
-so $\min_{p\in P}\dd(x,p)\ge\min_{c\in C}\dd(x,c)=\rho_C$, and $\rho_1(P)$ is
-at least this. The second sentence is Proposition~\ref{prop:cover}.
+Since $P\subseteq C$, the $k$ nearest contacts of any $x$ are among its sites
+in $C$, so $\dd_k(x,P)\ge\dd_k(x,C)$; take $x$ attaining $\rho_C^{(k)}$. The
+second sentence is Proposition~\ref{prop:cover}. On the mesh the same argument
+applies to $e(\cdot,T)$ triangle by triangle.
 \end{proof}
 
 \begin{proposition}[packing bound]\label{prop:packing}
@@ -358,32 +410,38 @@ every array with $X\subseteq R_1$ has at least $|S|$ contacts.
 \begin{proof}
 If $s$ and $s'$ lay in one footprint $B(p,r)$, then $\dd(s,s')\le
 \dd(s,p)+\dd(p,s')<2r$. So each footprint contains at most one point of $S$,
-and the footprints cover $S$.
+and the footprints cover $S$. On the mesh take $S$ a set of vertices of $X$:
+each lies in a seen triangle and so within $r$ of the contact that sees it.
 \end{proof}
 
 \begin{proposition}[farthest-point placement is within a factor two]
 \label{prop:greedy}
-On a mesh, with $\rho_1$ taken over the vertices of $X$, let $p_1,p_2,\dots$ be
-chosen from the vertices of $X$, each $p_{j+1}$ a vertex
-of $X$ farthest from $P_j=\{p_1,\dots,p_j\}$. Then for every $n$ and every set
-$Q$ of $n$ points of $M$, $\rho_1(P_n)\le2\rho_1(Q)$.
+On a mesh, let $p_1,p_2,\dots$ be vertices of $X$, each $p_{j+1}$ a vertex of
+$X$ farthest from $P_j=\{p_1,\dots,p_j\}$. Then for every $n$ and every set $Q$
+of $n$ points of $M$, $\rho_1^{\mathrm{v}}(P_n)\le2\rho_1^{\mathrm{v}}(Q)$, and
+$\rho_1(P_n)\le2\rho_1(Q)+\ell$.
 \end{proposition}
 
 \begin{proof}
 Since $p_{j+1}$ is a farthest vertex of $X$ from $P_j$,
-$\dd(p_{j+1},P_j)=\rho_1(P_j)$, and $\rho_1(P_j)$ does not increase with $j$.
-So any two of $p_1,\dots,p_{n+1}$ are at least $\rho_1(P_n)$ apart. Send each
-of these $n+1$ points to its nearest point of $Q$; two of them, $p_i$ and
-$p_j$, share a nearest point $q$, and $\rho_1(P_n)\le\dd(p_i,p_j)\le
-\dd(p_i,q)+\dd(q,p_j)\le2\rho_1(Q)$.
+$\dd(p_{j+1},P_j)=\rho_1^{\mathrm{v}}(P_j)$, and $\rho_1^{\mathrm{v}}(P_j)$
+does not increase with $j$. So any two of $p_1,\dots,p_{n+1}$ are at least
+$\rho_1^{\mathrm{v}}(P_n)$ apart. Send each of these $n+1$ points to its
+nearest point of $Q$; two of them, $p_i$ and $p_j$, share a nearest point $q$,
+and $\rho_1^{\mathrm{v}}(P_n)\le\dd(p_i,p_j)\le\dd(p_i,q)+\dd(q,p_j)\le
+2\rho_1^{\mathrm{v}}(Q)$. The second inequality follows from the first and
+the bounds between $\rho_1^{\mathrm{v}}$ and $\rho_1$.
 \end{proof}
 
 Proposition~\ref{prop:sitefloor} is the obstruction.
 Proposition~\ref{prop:packing} bounds the contact count from below, and
-Proposition~\ref{prop:greedy} says the simple placement rule we use loses at
-most a factor two in radius against any placement with the same number of
-contacts. On a surface the count scales like the inverse square of the
-radius, so the factor two in radius becomes about four in contact count.
+Proposition~\ref{prop:greedy} says the placement rule we use loses at most a
+factor two in radius, up to one mesh edge, against any placement with the same
+number of contacts. On a surface the count scales like the inverse square of
+the radius, so the factor two in radius becomes about four in contact count.
+The guarantee is for single coverage with sites anywhere on $X$; for $k\ge2$,
+and for restricted sites, the same rule is a heuristic, and its designs are
+checked by Proposition~\ref{prop:cover} rather than bounded in advance.
 
 \begin{figure}[t]
 \centering
@@ -393,12 +451,12 @@ length along the pial line). (a) A subdural sheet with $\foldNa$ contacts at a
 $10$\,mm pitch; large dots are contacts on the sheet and small dots the crown
 points they rest on. With footprint radius $r=\foldR$\,mm the deep banks and
 fundi are seen by no contact, $\foldUnseenPct\%$ of the line. The fundus
-marked is $\rho_C=\foldRhoC$\,mm from every crown point, so no sheet with a
-footprint radius below that sees it, at any pitch
-(Proposition~\ref{prop:sitefloor}). (b) The same $\foldNb$ contacts placed by
-covering radius along the line, $\foldDeep$ of them deep in a sulcus on depth
-leads: every point is within $r$ of a contact. Geometry from
-\texttt{tikz/fold\_geometry.py}.}
+marked is the point farthest from the crowns: its nearest crown point is
+$\rho_C=\foldRhoC$\,mm away, so no sheet with a footprint radius below that
+sees it, at any pitch (Proposition~\ref{prop:sitefloor}). (b) The same
+$\foldNb$ contacts placed by covering radius along the line, $\foldDeep$ of
+them deep in a sulcus on depth leads: every point is within $r$ of a contact.
+Geometry from \texttt{tikz/fold\_geometry.py}.}
 \label{fig:fold}
 \end{figure}
 
@@ -407,27 +465,30 @@ leads: every point is within $r$ of a contact. Geometry from
 % =====================================================================
 
 The design procedure follows from Section~\ref{sec:model} and is summarised
-in Fig.~\ref{fig:algorithm}. Given $M$, $X$, $C$, $r$ and $k$: compute the site
-floor $\rho_C$ by one multi-source Dijkstra run from every admissible site. If
-$\rho_C\ge r$ the sites are infeasible (Proposition~\ref{prop:sitefloor}), and
-$C$ has to be enlarged, with depth leads or strips placed into the sulci, or a
-larger radius accepted. Otherwise add contacts by farthest-point sampling,
-updating $\rho_1,\dots,\rho_k$ exactly after each, until $\rho_k<r$. Then check
-the design on the mesh: $X\subseteq R_k$ triangle by triangle, the certificate
-of the covered region with its disk test, and the capture curves $W_1$, $W_k$
-and $L$. The procedure needs only the patient's pial surface, which is part of
-standard presurgical imaging~\cite{Dale1999,Fischl2012}, and is exact on the
-mesh at every step.
+in Fig.~\ref{fig:algorithm}. Given $M$, $X$, $C$, $r$ and $k$: compute the
+site floor $\rho_C^{(k)}$ over every admissible site that can reach $X$. If
+$\rho_C^{(k)}\ge r$ the sites are infeasible (Proposition~\ref{prop:sitefloor}),
+and $C$ has to be enlarged, with depth leads or strips placed into the sulci,
+or a larger radius accepted. Otherwise add contacts by farthest-point
+sampling, updating $\rho_1,\dots,\rho_k$ exactly after each, until
+$\rho_k<r$; by Proposition~\ref{prop:cover} the design then sees all of $X$
+$k$ times, on the mesh and triangle by triangle. Then report the certificate of
+the covered region with its disk test, and the capture curves $W_1$, $W_k$ and
+$L$. The procedure needs the patient's pial surface, which can be
+reconstructed from the presurgical MRI with standard
+tools~\cite{Dale1999,Fischl2012}.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.62\textwidth]{fig4_algorithm.png}
-\caption{The design procedure. The site-floor test (Proposition~\ref{prop:sitefloor})
-decides before any placement whether the admissible sites can cover $X$ at
-radius $r$. Farthest-point steps (Proposition~\ref{prop:greedy}) add contacts
-until the $k$-th covering radius drops below $r$
-(Proposition~\ref{prop:cover}); the design is then verified on the mesh and
-its onset-zone capture is reported (Proposition~\ref{prop:erosion}).}
+\caption{The design procedure. The site-floor test
+(Proposition~\ref{prop:sitefloor}, with the $k$-th nearest site) rules out,
+before any placement, admissible sites that cannot see $X$ $k$ times at radius
+$r$. Farthest-point steps add contacts until the $k$-th covering radius drops
+below $r$ (Proposition~\ref{prop:cover}); for $k=1$ with sites anywhere on $X$
+they are within a factor two of optimal (Proposition~\ref{prop:greedy}). The
+design is then checked on the mesh and its onset-zone capture is reported
+(Proposition~\ref{prop:erosion}).}
 \label{fig:algorithm}
 \end{figure}
 
@@ -447,20 +508,22 @@ $8\times8$ parietal grid of the FieldTrip ECoG tutorial layout~\cite{Stolk2018},
 $10$\,mm pitch, transferred to the template by laying the lattice on the
 envelope of the hemisphere and assigning each lattice point to the nearest gyral
 vertex; its median neighbour spacing is $\gridEuPitchMedian$\,mm in a straight
-line and $\gridGeoPitchMedian$\,mm along the surface. This is template geometry,
-not a patient's implantation.
+line and $\gridGeoPitchMedian$\,mm along the surface, and $\gridOutsideX$ of its
+64 contacts lie outside $X$. This is template geometry, not a patient's
+implantation.
 
 \subsection*{Where the contacts sit decides the coverage}
 At $r=8$\,mm the $8\times8$ grid leaves $\gridUnseenEight$\,mm$^2$
 ($\gridUnseenPctEight\%$) of $X$ unseen, and its covered region, with Betti
-numbers $(b_0,b_1)=\gridBettiEight$, is in pieces and has holes. The same 64 contacts placed by
-farthest-point sampling over $X$ leave $\greedyUnseenEight$\,mm$^2$ unseen
-(Figs.~\ref{fig:cortex} and~\ref{fig:designs}b). At $10$ and $12$\,mm the grid
-still misses $\gridUnseenPctTen\%$ and $\gridUnseenPctTwelve\%$, and the placed
-array misses nothing. The covering radius says why. The grid's is
-$\capRhoOneGridEight$\,mm, the placed array's $\rhoFreeSixtyFour$\,mm
-(Fig.~\ref{fig:covering}). The contact count is the same. Only the positions
-differ.
+numbers $(b_0,b_1)=\gridBettiEight$, is in pieces and has holes. The same 64
+contacts placed by farthest-point sampling over $X$ leave
+$\greedyUnseenEight$\,mm$^2$ unseen (Figs.~\ref{fig:cortex}
+and~\ref{fig:designs}b). At $10$ and $12$\,mm the grid still misses
+$\gridUnseenPctTen\%$ and $\gridUnseenPctTwelve\%$, and the placed array misses
+nothing. The covering radius says why (Fig.~\ref{fig:covering}). The grid's
+is $\capRhoOneGridEight$\,mm. The placed array's is $\rhoFreeSixtyFour$\,mm,
+just above $8$\,mm, which is why $\greedyUnseenEight$\,mm$^2$ stays unseen;
+$\minNOneEight$ contacts bring it to $\minRhoOneEight$\,mm and leave nothing.
 
 \begin{figure}[t]
 \centering
@@ -475,56 +538,74 @@ the repository's result files with PyVista.}
 \end{figure}
 
 \subsection*{The site floor on real anatomy}
-Take $C$ to be the gyral part of $X$, the $\crownVerts$ vertices of negative
-sulcal depth, where a sheet on the envelope puts its contacts. One
-multi-source Dijkstra run gives $\rho_C=\crownFloorExact$\,mm, attained at MNI
-$\crownWorstMNI$ part way down a sulcal bank. Farthest-point sampling
-restricted to the crowns reaches that floor at $n=\crownFlatN$ and stays there
-(Fig.~\ref{fig:covering}). By Proposition~\ref{prop:sitefloor}, no array with
-its contacts on the crowns covers $X$ at a footprint radius below
-$\crownFloorExact$\,mm, whatever its pitch or contact count. With 64 crown
-contacts at $r=8$\,mm, $\capUnseenCrownEight$\,mm$^2$ of $X$ stays unseen.
+Take $C$ to be the gyral crowns, the vertices of negative sulcal depth, where
+a sheet on the envelope puts its contacts. A sheet is not confined to the
+crowns inside $X$, so we count every crown vertex within $\crownReach$\,mm of
+$X$, $\crownSites$ of them; none farther can see any triangle of $X$ at the
+radii that matter here. The site floor is $\rho_C=\crownFloor$\,mm, at a
+triangle whose centroid is at MNI $\crownWorstMNI$, part way down a sulcal
+bank, and $\rho_C^{(2)}=\crownFloorTwo$\,mm for double coverage. (On the
+vertex rule the floor is $\crownFloorVertex$\,mm; counting only the
+$\crownSitesInside$ crown vertices inside $X$ would give
+$\crownFloorInside$\,mm.) A crown-only sequence, which at each step adds the
+crown site closest to the worst covered triangle, reaches the floor at
+$n=\crownFlatN$ and stays there (Fig.~\ref{fig:covering}). By
+Proposition~\ref{prop:sitefloor}, no array with its contacts on the crowns
+sees all of $X$ at a footprint radius of $\crownFloor$\,mm or less, whatever
+its pitch or contact count. With 64 crown contacts at $r=8$\,mm,
+$\capUnseenCrownEight$\,mm$^2$ of $X$ stays unseen.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.82\textwidth]{fig6_covering.png}
-\caption{Covering radius of $X$ against contact count, by farthest-point
-sampling. Blue: sites anywhere on $X$. Aqua: sites on gyral crowns only, which
-cannot fall below the crown floor $\rho_C=\crownFloorExact$\,mm (dashed).
-Violet: the second covering radius $\rho_2$, which sets double coverage.
-Orange: the documented $8\times8$ grid. Dotted lines mark $r=8$ and
-$10$\,mm; a design covers $X$ at radius $r$ once its curve is below the line
+\caption{Covering radius of $X$ against contact count, on the triangle rule.
+Blue: sites anywhere on $X$, placed by farthest-point sampling. Green: sites on
+gyral crowns within reach of $X$, which cannot fall below the crown floor
+$\rho_C=\crownFloor$\,mm (dashed). Violet: the second covering radius $\rho_2$
+of the blue sequence, which sets double coverage. Orange: the documented
+$8\times8$ grid. Dotted lines mark $r=8$ and $10$\,mm; a design sees all of $X$
+at radius $r$ exactly when its curve is below the line
 (Proposition~\ref{prop:cover}).}
 \label{fig:covering}
 \end{figure}
 
 \subsection*{How few contacts}
-At each footprint radius, Table~\ref{tab:designs} gives the smallest $n$ for
-which the placed contacts leave nothing of $X$ unseen and the certificate gives
-$(b_0,b_1)=(1,0)$ with the mesh reference agreeing. From $r=14$ to $8$\,mm the
-count rises from $\minNFourteen$ to $\minNEight$, against packing lower bounds
-of $\packFourteen$ to $\packEight$ (Fig.~\ref{fig:designs}a). All designs at
-radii below $\crownFloor$\,mm need sites off the crowns: $\offCrownSixtySix$ of
-the $\minNEight$ sites at $8$\,mm and $\offCrownFortySix$ of the $\minNTen$ at
-$10$\,mm lie in sulcal territory that a sheet cannot reach and a depth lead
-or a sulcal strip can.
+Table~\ref{tab:designs} gives, at each footprint radius, the fewest contacts of
+the farthest-point sequence that see all of $X$ once and twice, found by
+scanning one contact at a time; at every radius, one contact fewer leaves part
+of $X$ unseen. Single coverage takes from $\minNOneFourteen$ contacts at
+$14$\,mm to $\minNOneEight$ at $8$\,mm, against packing lower bounds of
+$\packFourteen$ to $\packEight$, and double coverage from $\minNTwoFourteen$ to
+$\minNTwoEight$ (Fig.~\ref{fig:designs}a). Every design below the crown floor
+needs sites off the crowns: between $\offCrownPctLo\%$ and $\offCrownPctHi\%$ of
+their sites lie in sulcal territory that a sheet cannot reach and a depth lead
+or a sulcal strip can. The certificate agrees with the mesh for every
+single-coverage design. For double coverage at $9$, $12$ and $14$\,mm the nerve
+gives $(1,0)$ for $R_2$ while the mesh finds a hole in it; since all of $X$ is
+seen twice, the hole lies outside $X$, and it is missed by the nerve because
+geodesic footprints on a folded surface are not always convex. This is why
+containment is always decided by Proposition~\ref{prop:cover} on the mesh.
 
 \begin{table}[t]
 \centering\small
-\caption{Fewest contacts placed by covering radius for which nothing of $X$
-is unseen, with the certificate of the covered region $R_1$ (nerve and mesh
-agree at every row), the packing lower bound of
-Proposition~\ref{prop:packing}, and the number of disk-test failures among the
-nerve's faces, where the mesh decides.}
+\caption{Fewest contacts of the farthest-point sequence that see all of $X$
+once ($k=1$) and twice ($k=2$), scanned one contact at a time, with their
+covering radii (triangle rule), the Betti numbers of $R_k$ from the nerve and
+from the mesh, and the packing lower bound for single coverage
+(Proposition~\ref{prop:packing}).}
 \label{tab:designs}
-\begin{tabular}{rrrccrr}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{rrrccrrccr}
 \toprule
-$r$ (mm) & $n$ & $\rho_1$ (mm) & unseen & $(b_0,b_1)$ & lower bound & disk-test fail.\\
+ & \multicolumn{4}{c}{$k=1$} & \multicolumn{4}{c}{$k=2$} & \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+$r$ (mm) & $n$ & $\rho_1$ (mm) & nerve & mesh & $n$ & $\rho_2$ (mm) & nerve & mesh & bound\\
 \midrule
-14 & $\minNFourteen$ & $\minRhoFourteen$ & 0 & $(1,0)$ & $\packFourteen$ & $\diskFailFourteen$\\
-12 & $\minNTwelve$ & $\minRhoTwelve$ & 0 & $(1,0)$ & $\packTwelve$ & $\diskFailTwelve$\\
-10 & $\minNTen$ & $\minRhoTen$ & 0 & $(1,0)$ & $\packTen$ & $\diskFailTen$\\
-8 & $\minNEight$ & $\minRhoEight$ & 0 & $(1,0)$ & $\packEight$ & $\diskFailEight$\\
+14 & $\minNOneFourteen$ & $\minRhoOneFourteen$ & $\minShadowOneFourteen$ & $\minMeshOneFourteen$ & $\minNTwoFourteen$ & $\minRhoTwoFourteen$ & $\minShadowTwoFourteen$ & $\minMeshTwoFourteen$ & $\packFourteen$\\
+12 & $\minNOneTwelve$ & $\minRhoOneTwelve$ & $\minShadowOneTwelve$ & $\minMeshOneTwelve$ & $\minNTwoTwelve$ & $\minRhoTwoTwelve$ & $\minShadowTwoTwelve$ & $\minMeshTwoTwelve$ & $\packTwelve$\\
+10 & $\minNOneTen$ & $\minRhoOneTen$ & $\minShadowOneTen$ & $\minMeshOneTen$ & $\minNTwoTen$ & $\minRhoTwoTen$ & $\minShadowTwoTen$ & $\minMeshTwoTen$ & $\packTen$\\
+9 & $\minNOneNine$ & $\minRhoOneNine$ & $\minShadowOneNine$ & $\minMeshOneNine$ & $\minNTwoNine$ & $\minRhoTwoNine$ & $\minShadowTwoNine$ & $\minMeshTwoNine$ & $\packNine$\\
+8 & $\minNOneEight$ & $\minRhoOneEight$ & $\minShadowOneEight$ & $\minMeshOneEight$ & $\minNTwoEight$ & $\minRhoTwoEight$ & $\minShadowTwoEight$ & $\minMeshTwoEight$ & $\packEight$\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -532,12 +613,12 @@ $r$ (mm) & $n$ & $\rho_1$ (mm) & unseen & $(b_0,b_1)$ & lower bound & disk-test 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{fig7_designs.png}
-\caption{(a) Fewest contacts placed by covering radius that see all of $X$
-(blue), and that see all of $X$ twice (violet), against the packing lower
-bound (grey). Left of the crown floor (shaded) no array with contacts on the
-crowns covers $X$ at any count. (b) The share of $X$ that no contact sees, for
-the documented $8\times8$ grid and for the same 64 contacts placed by covering
-radius.}
+\caption{(a) Fewest contacts of the farthest-point sequence that see all of
+$X$ once (blue) and twice (violet), against the packing lower bound for single
+coverage (grey). Left of the crown floor (shaded) no array with contacts on the
+crowns sees all of $X$ at any count. (b) The share of $X$ that no contact sees,
+for the documented $8\times8$ grid and for the same 64 contacts placed by
+covering radius.}
 \label{fig:designs}
 \end{figure}
 
@@ -546,28 +627,29 @@ Table~\ref{tab:capture} and Fig.~\ref{fig:capture} give the capture of an onset
 zone of radius $s$ placed uniformly in $X$. With the $8\times8$ grid at
 $r=8$\,mm, an onset zone of radius $5$\,mm is seen whole in
 $\capWholeFiveGridEight\%$ of its possible positions and missed entirely in
-$\capMissFiveGridEight\%$. An onset zone of radius $10$\,mm is never seen
-whole, and one of radius up to $\capHiddenGridEight$\,mm can lie in $X$ and be missed
-entirely. Proposition~\ref{prop:erosion}(2) predicts at least
-$\rho_1-r=\gridHideBound$\,mm wherever the grid's farthest point leaves room
-for the disk in $X$. Sixty-four crown contacts never miss a $5$\,mm onset zone entirely but
-see it whole in only $\capWholeFiveCrownEight\%$ of positions: the rest are
-seen in part, the case of truncated localisation. The same 64 contacts placed
-anywhere on $X$ see it whole in $\capWholeFiveFreeSixtyFour\%$ of positions,
-the remainder being the positions within $5$\,mm of the
-$\greedyUnseenEight$\,mm$^2$ they leave unseen, and $\minNEight$ contacts see
-every onset zone of every size whole, as Proposition~\ref{prop:erosion}(1)
-requires.
+$\capMissFiveGridEight\%$; one of radius $10$\,mm is seen whole in
+$\capWholeTenGridEight\%$, and one of radius up to $\capHiddenGridEight$\,mm can
+lie in $X$ and be missed entirely, in line with the continuous bound
+$\rho_1-r=\gridHideBound$\,mm of Proposition~\ref{prop:erosion}(2).
+Sixty-four crown contacts never miss a $5$\,mm onset zone entirely but see it
+whole in only $\capWholeFiveCrownEight\%$ of positions: the rest are seen in
+part, the case of truncated localisation. The same 64 contacts placed anywhere
+on $X$ see it whole in $\capWholeFiveFreeSixtyFour\%$ of positions, the
+remainder being the positions within $5$\,mm of the $\greedyUnseenEight$\,mm$^2$
+they leave unseen, where an onset zone smaller than
+$\capHiddenFreeSixtyFour$\,mm can even be missed. The $\minNOneEight$ contacts
+that see all of $X$ see every onset zone of every size whole, as
+Proposition~\ref{prop:erosion}(1) requires.
 
 \begin{table}[t]
 \centering\small
-\caption{Covering radii and onset-zone capture of each design on $X$. $W_1$:
-positions in which an onset zone of radius $s$ is seen whole; $L$: missed
-entirely; $W_2$: seen twice, hence whole after any one failure; $h$: radius of
-the largest onset zone that can be missed entirely. Percentages of admissible
-positions, area-weighted.}
+\caption{Covering radii and onset-zone capture of each design on $X$, on the
+triangle rule. $W_1$: positions in which an onset zone of radius $s$ is seen
+whole; $L$: missed entirely; $W_2$: seen twice, hence whole after any one
+failure; $h$: radius of the largest onset zone that can be missed entirely.
+Percentages of admissible positions, area-weighted.}
 \label{tab:capture}
-\setlength{\tabcolsep}{4.5pt}
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrrrrrr}
 \toprule
 design & $r$ & $\rho_1$ & $\rho_2$ & unseen & \multicolumn{2}{c}{$W_1$ (\%)} & $L$ (\%) & $h$ & $W_2$ (\%)\\
@@ -578,10 +660,10 @@ $8\times8$ grid, 64 & 8 & $\capRhoOneGridEight$ & $\capRhoTwoGridEight$ & $\capU
 $8\times8$ grid, 64 & 10 & $\capRhoOneGridTen$ & $\capRhoTwoGridTen$ & $\capUnseenGridTen$ & $\capWholeFiveGridTen$ & $\capWholeTenGridTen$ & $\capMissFiveGridTen$ & $\capHiddenGridTen$ & $\capTwiceFiveGridTen$\\
 crown sites, 64 & 8 & $\capRhoOneCrownEight$ & $\capRhoTwoCrownEight$ & $\capUnseenCrownEight$ & $\capWholeFiveCrownEight$ & $\capWholeTenCrownEight$ & $\capMissFiveCrownEight$ & $\capHiddenCrownEight$ & $\capTwiceFiveCrownEight$\\
 placed, 64 & 8 & $\capRhoOneFreeSixtyFour$ & $\capRhoTwoFreeSixtyFour$ & $\capUnseenFreeSixtyFour$ & $\capWholeFiveFreeSixtyFour$ & $\capWholeTenFreeSixtyFour$ & $\capMissFiveFreeSixtyFour$ & $\capHiddenFreeSixtyFour$ & $\capTwiceFiveFreeSixtyFour$\\
-placed, 66 & 8 & $\capRhoOneFreeSixtySix$ & $\capRhoTwoFreeSixtySix$ & $\capUnseenFreeSixtySix$ & $\capWholeFiveFreeSixtySix$ & $\capWholeTenFreeSixtySix$ & $\capMissFiveFreeSixtySix$ & $\capHiddenFreeSixtySix$ & $\capTwiceFiveFreeSixtySix$\\
-placed, 46 & 10 & $\capRhoOneFreeFortySix$ & $\capRhoTwoFreeFortySix$ & $\capUnseenFreeFortySix$ & $\capWholeFiveFreeFortySix$ & $\capWholeTenFreeFortySix$ & $\capMissFiveFreeFortySix$ & $\capHiddenFreeFortySix$ & $\capTwiceFiveFreeFortySix$\\
-placed, 96 & 10 & $\capRhoOneFreeNinetySix$ & $\capRhoTwoFreeNinetySix$ & $\capUnseenFreeNinetySix$ & $\capWholeFiveFreeNinetySix$ & $\capWholeTenFreeNinetySix$ & $\capMissFiveFreeNinetySix$ & $\capHiddenFreeNinetySix$ & $\capTwiceFiveFreeNinetySix$\\
-placed, 112 & 9 & $\capRhoOneFreeOneTwelve$ & $\capRhoTwoFreeOneTwelve$ & $\capUnseenFreeOneTwelve$ & $\capWholeFiveFreeOneTwelve$ & $\capWholeTenFreeOneTwelve$ & $\capMissFiveFreeOneTwelve$ & $\capHiddenFreeOneTwelve$ & $\capTwiceFiveFreeOneTwelve$\\
+placed, $\capNOneEight$ ($k=1$) & 8 & $\capRhoOneOneEight$ & $\capRhoTwoOneEight$ & $\capUnseenOneEight$ & $\capWholeFiveOneEight$ & $\capWholeTenOneEight$ & $\capMissFiveOneEight$ & $\capHiddenOneEight$ & $\capTwiceFiveOneEight$\\
+placed, $\capNTwoEight$ ($k=2$) & 8 & $\capRhoOneTwoEight$ & $\capRhoTwoTwoEight$ & $\capUnseenTwoEight$ & $\capWholeFiveTwoEight$ & $\capWholeTenTwoEight$ & $\capMissFiveTwoEight$ & $\capHiddenTwoEight$ & $\capTwiceFiveTwoEight$\\
+placed, $\capNOneTen$ ($k=1$) & 10 & $\capRhoOneOneTen$ & $\capRhoTwoOneTen$ & $\capUnseenOneTen$ & $\capWholeFiveOneTen$ & $\capWholeTenOneTen$ & $\capMissFiveOneTen$ & $\capHiddenOneTen$ & $\capTwiceFiveOneTen$\\
+placed, $\capNTwoTen$ ($k=2$) & 10 & $\capRhoOneTwoTen$ & $\capRhoTwoTwoTen$ & $\capUnseenTwoTen$ & $\capWholeFiveTwoTen$ & $\capWholeTenTwoTen$ & $\capMissFiveTwoTen$ & $\capHiddenTwoTen$ & $\capTwiceFiveTwoTen$\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -590,40 +672,38 @@ placed, 112 & 9 & $\capRhoOneFreeOneTwelve$ & $\capRhoTwoFreeOneTwelve$ & $\capU
 \centering
 \includegraphics[width=\textwidth]{fig8_capture.png}
 \caption{Onset-zone capture against onset-zone radius $s$, over all positions
-in which the zone fits in $X$. (a) Seen whole, $W_1(s)$, at $r=8$\,mm: the
-$8\times8$ grid, 64 contacts on the crowns, 64 and $\minNEight$ contacts
-placed by covering radius. (b) Missed entirely, $L(s)$; every placed design
-misses nothing. (c) Seen twice, $W_2(s)$, which by
-Proposition~\ref{prop:failure} is the share still seen whole after any one
-contact fails: single-coverage designs (blue) lose it quickly with $s$,
-double-coverage designs (violet) keep it. Data from \texttt{run\_soz\_capture.py}.}
+in which the zone fits in $X$ (triangle rule; zones measured between triangle
+centroids). (a) Seen whole, $W_1(s)$, at $r=8$\,mm: the $8\times8$ grid, 64
+contacts on the crowns, 64 and $\capNOneEight$ contacts placed by covering
+radius. (b) Missed entirely, $L(s)$; designs that see all of $X$ miss nothing,
+and 64 placed contacts can miss only onset zones smaller than
+$\capHiddenFreeSixtyFour$\,mm, too small to show. (c) Seen twice, $W_2(s)$,
+which by Proposition~\ref{prop:failure} is the share still seen whole after any
+one contact fails: single-coverage designs (blue) lose it quickly with $s$,
+double-coverage designs (violet) keep it. Data from
+\texttt{run\_soz\_capture.py}.}
 \label{fig:capture}
 \end{figure}
 
 \subsection*{When contacts fail}
-Single coverage is fragile. The $\minNEight$-contact design sees a $5$\,mm onset
-zone twice in only $\capTwiceFiveFreeSixtySix\%$ of positions, so one
+Single coverage is fragile. The $\capNOneEight$-contact design sees a $5$\,mm
+onset zone twice in only $\capTwiceFiveOneEight\%$ of positions, so one
 well-placed failure can open a gap under most onset zones. Double coverage
-repairs this. With $\dblAN$ contacts at $10$\,mm, all but $\dblAOnce$\,mm$^2$ of
-$X$ is seen twice and $W_2(5)=\capTwiceFiveFreeNinetySix\%$; with $\dblBN$
-contacts at $9$\,mm all of $X$ is seen twice by direct computation on the mesh,
-$\rho_2=\capRhoTwoFreeOneTwelve$\,mm, and every onset zone survives any single
-failure. The nerve certificate of this last design is $\dblBShadow$ for
-$\Delta_2(N)$ but the mesh finds $\dblBMesh$: a hole in $R_2$ outside $X$,
-missed by the nerve because $\dblBDisk$ of its $\dblBFaces$ faces fail the
-disk test. It does not affect $X$, and it is why containment is always decided
-on the mesh.
+repairs this: $\capNTwoEight$ contacts at $8$\,mm and $\capNTwoTen$ at
+$10$\,mm see all of $X$ twice, $\rho_2=\capRhoTwoTwoEight$ and
+$\capRhoTwoTwoTen$\,mm, and every onset zone survives any single failure.
 
 Under random failure of $q$ contacts ($\dropDraws$ draws for each $q$), the
-share of $5$\,mm onset zones still seen whole falls, for the $\minNEight$-contact
-single-coverage design, to $\dropMeanOneFreeSixtySix\%$ at $q=1$,
-$\dropMeanFourFreeSixtySix\%$ at $q=4$ and $\dropMeanEightFreeSixtySix\%$ at
-$q=8$ (5th percentile over draws $\dropLowEightFreeSixtySix\%$). For the
-double-coverage designs it stays at or above $\dropMeanEightFreeNinetySix\%$
-throughout (Fig.~\ref{fig:dropout}). The $8\times8$ grid starts at
-$\capWholeFiveGridEight\%$ and ends at $\dropMeanEightGridEight\%$. The price
-of failure-proof sampling is contacts: $\dblBN$ at $9$\,mm against
-$\minNEight$ at $8$\,mm, which is the trade the design procedure makes
+share of $5$\,mm onset zones still seen whole falls, for the
+$\capNOneEight$-contact single-coverage design, to $\dropMeanOneOneEight\%$ at
+$q=1$, $\dropMeanFourOneEight\%$ at $q=4$ and $\dropMeanEightOneEight\%$ at
+$q=8$ (5th percentile over draws $\dropLowEightOneEight\%$). For the
+double-coverage designs the lowest mean over all $q$ is $\dropMinTwoEight\%$ at
+$8$\,mm and $\dropMinTwoTen\%$ at $10$\,mm (Fig.~\ref{fig:dropout}). The
+$8\times8$ grid starts at $\capWholeFiveGridEight\%$ and ends at
+$\dropMeanEightGridEight\%$. The price of failure-proof sampling is contacts:
+$\capNTwoEight$ against $\capNOneEight$ at $8$\,mm, and $\capNTwoTen$ against
+$\capNOneTen$ at $10$\,mm, which is the trade the design procedure makes
 explicit.
 
 \begin{figure}[t]
@@ -646,14 +726,14 @@ space would be harder on every design.}
 \subsection*{What optimal coverage buys}
 The results separate two things that ``coverage'' runs together: how many
 contacts an array has, and where they sit. On this territory the documented
-grid and a placed array with the same 64 contacts differ by a factor of three
-in covering radius, and by more than half the territory in what they see. The
-covering radius explains the difference in one number, predicts the largest
-onset zone an array can miss (Proposition~\ref{prop:erosion}), and is cheap
-enough to optimise directly. Pushing $\rho_k$ below $r$ gives a worst-case
-guarantee that no average-case measure gives: every onset zone of every size in
-$X$ is seen whole, and stays so after any $k-1$ failures
-(Proposition~\ref{prop:failure}).
+grid and a placed array with the same 64 contacts have covering radii of
+$\capRhoOneGridEight$ and $\rhoFreeSixtyFour$\,mm, and differ by more than half
+the territory in what they see. The covering radius explains the difference in
+one number, predicts the largest onset zone an array can miss
+(Proposition~\ref{prop:erosion}), and is cheap enough to optimise directly.
+Pushing $\rho_k$ below $r$ gives a worst-case guarantee that no average-case
+measure gives: every onset zone of every size in $X$ is seen whole, and stays
+so after any $k-1$ failures (Proposition~\ref{prop:failure}).
 
 The site floor explains why subdural sheets have limits that no pitch or
 contact count removes (Proposition~\ref{prop:sitefloor}). Between
@@ -677,15 +757,18 @@ while spatial perturbation of implantations has been proposed as a way to test
 whether the epileptogenic zone was sampled at all~\cite{Jaber2024}.
 
 \subsection*{A test of clinical relevance}
-The test needs patients with the reconstructed pial surface, the implanted
-contact coordinates, the resection and the surgical outcome, as in open
-intracranial datasets such as OpenNeuro ds003029~\cite{Li2021}. For each
-patient, compute on the patient's own surface the covering radius of the
-resected territory by the implanted contacts, $W_1$ and $L$ over it, and the
-same for the design this paper's procedure would have produced with the same
-number of contacts. Then test, under a plan fixed before any outcome label is
-read, whether coverage of the resected territory predicts seizure freedom. A
-null result would bound the clinical value of optimal coverage. A positive
+The test needs patients with four things together: the reconstructed pial
+surface, the implanted contact coordinates, the resection and the surgical
+outcome. Open intracranial datasets do not yet reliably provide all four.
+OpenNeuro ds003029~\cite{Li2021}, for example, releases intracranial
+recordings with clinically annotated channels and surgical outcome, but no MRI
+or contact coordinates, which would have to come from the treating centres.
+For each patient, compute on the patient's own surface the covering radius of
+the resected territory by the implanted contacts, $W_1$ and $L$ over it, and
+the same for the design this paper's procedure would have produced with the
+same number of contacts. Then test, under a plan fixed before any outcome label
+is read, whether coverage of the resected territory predicts seizure freedom.
+A null result would bound the clinical value of optimal coverage. A positive
 one would justify a prospective comparison of designed and conventional
 implantations.
 
@@ -696,8 +779,10 @@ along the cortex over which a contact is credited with recording an onset; it
 is swept, not measured, and calibrating it from lead fields or from recorded
 spread is the most important extension. Geodesic distance is shortest-path
 distance on the mesh edges, which slightly overestimates the true surface
-distance. Contact sites are mesh vertices, a site off the crowns stands for a
-depth or sulcal contact without modelling its trajectory, and surgical
+distance, and the triangle rule counts a triangle as seen only when one
+contact sees all of it; both make the designs conservative by at most about
+one mesh edge. Contact sites are mesh vertices, a site off the crowns stands
+for a depth or sulcal contact without modelling its trajectory, and surgical
 constraints (vessels, eloquent cortex, safe entry points) are not modelled;
 they enter the procedure as a smaller site set $C$, which
 Proposition~\ref{prop:sitefloor} then prices. The uniform priors over onset
@@ -720,29 +805,33 @@ vertices are those of negative FreeSurfer sulcal depth.
 
 \subsection*{Designs}
 Farthest-point sampling starts from the vertex of $X$ nearest to the anchor and
-adds, at each step, a candidate farthest from the contacts so far, with
-candidates all vertices of $X$ (placed designs) or its gyral vertices (crown
-designs); $\rho_1$ is recorded exactly at every step, and $\rho_k$ every eight
-steps. The smallest designs of Table~\ref{tab:designs} are found by scanning
-$n$ upwards. Packing bounds come from a maximal $2r$-separated subset of $X$.
-The certificate is computed with the nerve of the footprints, the Betti numbers
-of $\Delta_k(N)$ over GF(2), a disk test on every face of the nerve, and a
-mesh reference for $R_k$ computed without the nerve, all as
-in~\cite{kshadowcode}.
+adds, at each step, a vertex of $X$ farthest from the contacts so far. The
+triangle covering radii $\rho_1$ and $\rho_2$ of every prefix of this sequence
+are computed exactly from $e(p,T)$, and the fewest contacts of
+Table~\ref{tab:designs} are the first prefixes with $\rho_k<r$. The crown floor
+is computed from $e(c,T)$ for every crown vertex within $\crownReach$\,mm of
+$X$. The crown-only sequence adds, at each step, the crown site with the
+smallest $e(c,T^\ast)$ to the worst covered triangle $T^\ast$ that is not yet
+at its own floor. Packing bounds come from a maximal $2r$-separated set of
+vertices of $X$. The certificate is computed with the nerve of the footprints,
+the Betti numbers of $\Delta_k(N)$ over GF(2), a disk test on every face of the
+nerve, and a mesh reference for $R_k$ computed without the nerve, all as
+in~\cite{kshadowcode}. The designs are \texttt{run\_ecog\_designs.py}, about
+five minutes.
 
 \subsection*{Capture and failure}
-For each design, one multi-source Dijkstra run from the vertices of the
-triangles of $X$ held by fewer than $k$ footprints gives, at every vertex, the
-distance to the set $M\setminus R_k$, and one from the vertices of the seen
-triangles gives the distance to $R_1$. By Proposition~\ref{prop:erosion},
-$W_1$, $W_2$ and $L$ follow by thresholding at each $s$ from $0$ to $15$\,mm
-in steps of $0.5$\,mm, with vertex areas (a third of the incident triangle
-areas) as the measure and centres admissible when their distance to the outside
-of $X$ exceeds $s$. For contact failure, $q\in\{1,2,3,4,6,8\}$ contacts are
-removed uniformly at random, $\dropDraws$ times for each $q$ with fixed seeds,
-the survivors' footprints are recomputed, and $W_1$ is taken again at $s=5$ and
-$10$\,mm. The analysis is \texttt{run\_soz\_capture.py}; it runs in about
-twenty seconds.
+Every triangle centroid is added to the edge graph as a node joined to the
+three vertices of its triangle. For each design, one multi-source Dijkstra run
+from the centroids of the triangles of $X$ held by fewer than $k$ footprints
+gives, at every centroid of $X$, the distance to $X\setminus R_k$; one from
+the centroids of the seen triangles gives the distance to $R_1$; and one from
+the centroids outside $X$ decides admissibility. By
+Proposition~\ref{prop:erosion}, $W_1$, $W_2$ and $L$ follow by thresholding at
+each $s$ from $0$ to $15$\,mm in steps of $0.5$\,mm, with triangle areas as the
+measure. For contact failure, $q\in\{1,2,3,4,6,8\}$ contacts are removed
+uniformly at random, $\dropDraws$ times for each $q$ with fixed seeds, the
+survivors' footprints are recomputed, and $W_1$ is taken again at $s=5$ and
+$10$\,mm. The analysis is \texttt{run\_soz\_capture.py}, about a minute.
 
 \subsection*{Figures}
 Figures~\ref{fig:pathway}--\ref{fig:algorithm} and
@@ -761,8 +850,9 @@ below.
 \begin{sloppypar}
 All code, result files and figure sources are in the GitHub repository
 \codeRepo~\cite{kshadowcode}. The designs and certificates are those of
-release \codeRelease; \texttt{run\_soz\_capture.py} and the figure sources of
-this paper are added after it.
+release \codeRelease; \texttt{run\_ecog\_designs.py},
+\texttt{run\_soz\_capture.py} and the figure sources of this paper are added
+after it.
 The repository is archived on Zenodo, release \zenodoRelease{} at
 \href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}. This manuscript is
 \texttt{paper/ecog/ecog\_coverage.tex}, built by

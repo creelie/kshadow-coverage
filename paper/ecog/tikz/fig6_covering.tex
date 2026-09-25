@@ -1,6 +1,8 @@
 % fig6_covering.tex -- covering radius against contact count on the target
-% patch of the colin27 template.  Data: results/optimal.json and
-% results/soz_capture.json, via make_ecog_paper_data.py.
+% patch of the colin27 template, on the triangle rule (a triangle is seen when
+% one contact is within r of all three of its vertices).  Data:
+% results/ecog_designs.json and results/soz_capture.json, via
+% make_ecog_paper_data.py.
 \documentclass[tikz,border=4pt]{standalone}
 \input{ecogstyle}
 \input{../numbers_ecog.tex}
@@ -11,26 +13,23 @@
   xmin=0, xmax=162, ymin=0, ymax=36,
   xtick={0,20,...,160}, ytick={0,5,...,35},
   xlabel={contacts $n$},
-  ylabel={covering radius of $X$ (mm)},
-  legend pos=north east,
-  legend style={at={(0.985,0.975)}},
+  ylabel={covering radius $\rho$ of $X$ (mm)},
+  legend style={at={(0.985,0.975)}, anchor=north east},
 ]
   % footprint radii used below, as recessive reference lines
   \addplot[cMuted, line width=0.5pt, dash pattern=on 1pt off 2pt, forget plot]
     coordinates {(0,8) (162,8)};
   \addplot[cMuted, line width=0.5pt, dash pattern=on 1pt off 2pt, forget plot]
     coordinates {(0,10) (162,10)};
-  \node[font=\scriptsize, text=cInk2, anchor=south east] at (axis cs:161,8) {$r=8$};
-  \node[font=\scriptsize, text=cInk2, anchor=south east] at (axis cs:161,10) {$r=10$};
-  % crown floor
+  % site floor of the crowns
   \addplot[cAqua!70!black, line width=0.8pt, dash pattern=on 4pt off 2pt, forget plot]
-    coordinates {(0,\crownFloorExact) (162,\crownFloorExact)};
+    coordinates {(0,\crownFloor) (162,\crownFloor)};
 
   \addplot[cAqua, line width=1.6pt] table[x=n, y=rho] {data/rho_crown.dat};
-  \addlegendentry{sites on gyral crowns only, $\rho_1$}
+  \addlegendentry{crown sites only, $\rho_1$}
   \addplot[cBlue, line width=1.6pt] table[x=n, y=rho] {data/rho_free.dat};
   \addlegendentry{sites anywhere on $X$, $\rho_1$}
-  \addplot[cViolet, line width=1.6pt, mksq] table[x=n, y=rho] {data/rho2_free.dat};
+  \addplot[cViolet, line width=1.6pt] table[x=n, y=rho] {data/rho2_free.dat};
   \addlegendentry{sites anywhere on $X$, $\rho_2$ (seen twice)}
   \addplot[only marks, mark=*, mark size=3.4pt, cOrange,
     mark options={draw=white, line width=0.9pt}]
@@ -38,19 +37,24 @@
   \addlegendentry{documented $8\times8$ grid, $\rho_1$}
 
   % direct labels
-  \node[font=\footnotesize, text=cInk, anchor=west, align=left]
+  \node[font=\footnotesize, text=cInk, anchor=west]
     at (axis cs:67,\capRhoOneGridEight) {$8\times8$ grid: $\rho_1=\capRhoOneGridEight$\,mm};
-  \node[font=\footnotesize, text=cInk, anchor=south east, align=right]
-    at (axis cs:160,\crownFloorExact) {crown floor $\rho_C=\crownFloorExact$\,mm};
+  \node[font=\footnotesize, text=cInk, anchor=south east]
+    at (axis cs:160,\crownFloor) {crown floor $\rho_C=\crownFloor$\,mm};
   \draw[-{Stealth[length=5pt]}, line width=0.6pt, cInk2]
-    (axis cs:88,3.3) node[anchor=east, font=\footnotesize, text=cInk] {64 placed: $\rho_1=\rhoFreeSixtyFour$\,mm}
-    -- (axis cs:64,\rhoFreeSixtyFour);
+    (axis cs:84,1.5) node[anchor=west, font=\footnotesize, text=cInk]
+    {64 placed: $\rho_1=\rhoFreeSixtyFour$\,mm${}>8$}
+    -- (axis cs:64.8,\rhoFreeSixtyFour);
   \addplot[only marks, mark=*, mark size=2.4pt, cBlue,
     mark options={draw=white, line width=0.8pt}, forget plot]
     coordinates {(64,\rhoFreeSixtyFour)};
-  \addplot[only marks, mark=*, mark size=2.4pt, cAqua,
+  \addplot[only marks, mark=*, mark size=2.4pt, cBlue,
     mark options={draw=white, line width=0.8pt}, forget plot]
-    coordinates {(64,\rhoCrownSixtyFour)};
+    coordinates {(\minNOneEight,\minRhoOneEight)};
+  \draw[-{Stealth[length=5pt]}, line width=0.6pt, cInk2]
+    (axis cs:84,3.6) node[anchor=west, font=\footnotesize, text=cInk]
+    {\minNOneEight{} placed: $\rho_1=\minRhoOneEight$\,mm${}<8$}
+    -- (axis cs:\minNOneEight.8,\minRhoOneEight);
 \end{axis}
 \end{tikzpicture}
 \end{document}

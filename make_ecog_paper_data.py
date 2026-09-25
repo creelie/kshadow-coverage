@@ -1,14 +1,19 @@
 """
 make_ecog_paper_data.py -- the numbers and plot tables of the ECoG paper.
 
-Reads results/optimal.json, results/cortex.json, results/dropout_cortex.json
-and results/soz_capture.json, and writes
+Reads results/ecog_designs.json, results/soz_capture.json, results/optimal.json,
+results/cortex.json and results/dropout_cortex.json, and writes
 
   paper/ecog/numbers_ecog.tex     every number the manuscript quotes, as macros
   paper/ecog/tikz/data/*.dat      the tables the pgfplots figures read
+  paper/ecog/figures/fig5_cortex.png   the two surface renders of
+                                  figures/fig_optimal.png
 
 so that nothing in paper/ecog/ecog_coverage.tex or its figures is typed by
-hand.  Run run_soz_capture.py first.  Then
+hand.  Macros and tables are named by role (the grid, the crown design, the
+fewest contacts seeing X once or twice at 8 or 10 mm), not by contact count, so
+the TikZ sources do not change when a count does.  Run run_ecog_designs.py and
+run_soz_capture.py first.  Then
 
     cd paper/ecog && ./build.sh
 """
@@ -25,7 +30,13 @@ DAT.mkdir(parents=True, exist_ok=True)
 O = json.load(open(RES / 'optimal.json'))
 C = json.load(open(RES / 'cortex.json'))
 DC = json.load(open(RES / 'dropout_cortex.json'))
+ED = json.load(open(RES / 'ecog_designs.json'))
 S = json.load(open(RES / 'soz_capture.json'))
+
+# the tables this script writes (the fold_* files belong to fold_geometry.py)
+for p in DAT.glob('*.dat'):
+    if not p.name.startswith('fold_'):
+        p.unlink()
 
 macros = []
 
@@ -39,7 +50,13 @@ def f(x, nd=1):
 
 
 def pct(x, nd=1):
-    return f(100.0 * x, nd)
+    """A share as a percentage, never rounded onto 0 or 100 unless exact."""
+    s = f(100.0 * x, nd)
+    if x < 1 and float(s) >= 100:
+        return '{>}' + f(100 - 10 ** -nd, nd)
+    if x > 0 and float(s) <= 0:
+        return '{<}' + f(10 ** -nd, nd)
+    return s
 
 
 def table(name, header, rows):
@@ -49,72 +66,78 @@ def table(name, header, rows):
             fh.write(' '.join(str(v) for v in r) + '\n')
 
 
+RW = {8.0: 'Eight', 9.0: 'Nine', 10.0: 'Ten', 12.0: 'Twelve', 14.0: 'Fourteen'}
+
 # ------------------------------------------------------------ the target
 P = O['patch']
 mac('patchArea', '%d' % round(P['area_mm2']))
 mac('patchVerts', P['vertices'])
 mac('patchTris', P['triangles'])
 mac('patchRadius', '%d' % O['patch_radius_mm'])
-a = O['anchor_mni']
-mac('anchorMNI', '(%d, %d, %d)' % tuple(int(x) for x in a))
+mac('anchorMNI', '(%d, %d, %d)' % tuple(int(x) for x in O['anchor_mni']))
 mac('meshVerts', '175\\,409')
 mac('meshTris', '350\\,814')
+mac('edgeMax', f(ED['edge_max_mm'], 2))
+mac('edgeMedian', f(ED['edge_median_mm'], 2))
 
 # ------------------------------------------------------------ crown floor
-cf = O['crown_floor']
-mac('crownFloor', f(cf['covering_radius_mm'], 2))
-mac('crownFloorExact', f(cf['covering_radius_mm'], 3))
-mac('crownVerts', cf['n_crown_vertices'])
-w = cf['worst_vertex_mni']
+cf = ED['crown_floor']
+mac('crownFloor', f(cf['rho_C_mm'], 2))
+mac('crownFloorTwo', f(cf['rho_C2_mm'], 2))
+mac('crownFloorVertex', f(cf['rho_C_vertex_all_crowns_mm'], 2))
+mac('crownFloorInside', f(cf['rho_C_vertex_crowns_inside_X_mm'], 2))
+mac('crownSites', cf['n_sites_within_reach'])
+mac('crownSitesInside', cf['n_sites_inside_X'])
+mac('crownReach', '%d' % cf['reach_mm'])
+w = cf['worst_triangle_centroid_mni']
 mac('crownWorstMNI', '(%s, %s, %s)' % (f(w[0]), f(w[1]), f(w[2])))
+cr = ED['crown']
+mac('crownFlatN', cr['reaches_floor_at'])
+mac('crownUnseenSixtyFour', f(cr['unseen_mm2_r8_at_64']))
 
-# ------------------------------------------------------------ covering radius
-fr = O['families']['free']['rho_mm']
-cr = O['families']['crown']['rho_mm']
-table('rho_free.dat', ['n', 'rho'], [(i + 1, x) for i, x in enumerate(fr)])
-table('rho_crown.dat', ['n', 'rho'], [(i + 1, x) for i, x in enumerate(cr)])
-k2 = O['families']['free']['kfold_rho_mm']
+# ------------------------------------------------------------ covering radii
+fr1, fr2 = ED['free']['rho1_mm'], ED['free']['rho2_mm']
+table('rho_free.dat', ['n', 'rho'], [(i + 1, x) for i, x in enumerate(fr1)])
 table('rho2_free.dat', ['n', 'rho'],
-      [(int(n), round(v['2'], 4)) for n, v in sorted(k2.items(), key=lambda t: int(t[0]))])
-k2c = O['families']['crown']['kfold_rho_mm']
-table('rho2_crown.dat', ['n', 'rho'],
-      [(int(n), round(v['2'], 4)) for n, v in sorted(k2c.items(), key=lambda t: int(t[0]))])
-# first n from which the crown sequence sits on its floor
-flat = next(i + 1 for i, x in enumerate(cr) if abs(x - cf['covering_radius_mm']) < 1e-3)
-mac('crownFlatN', flat)
-mac('rhoFreeOne', f(fr[0], 0))
-mac('rhoFreeLast', f(fr[-1], 2))
-mac('nMaxGreedy', len(fr))
-mac('rhoFreeSixtyFour', f(fr[63], 2))
-mac('rhoCrownSixtyFour', f(cr[63], 2))
-mac('rhoTwoFreeSixtyFour', f(k2['64']['2'], 2))
-mac('rhoTwoFreeOneTwentyEight', f(k2['128']['2'], 2))
-mac('rhoTwoFreeOneSixty', f(k2['160']['2'], 2))
+      [(i + 1, x) for i, x in enumerate(fr2) if x is not None])
+table('rho_crown.dat', ['n', 'rho'],
+      [(i + 1, x) for i, x in enumerate(cr['rho1_mm'])
+       if x is not None and math.isfinite(x) and x < 40])
+mac('nMaxGreedy', len(fr1))
+mac('rhoFreeSixtyFour', f(fr1[63], 2))
+mac('rhoFreeSixtyFourVertex', f(ED['free']['rho1_vertex_mm'][63], 2))
 
-# ------------------------------------------------------------ minimal designs
-names = {14.0: 'Fourteen', 12.0: 'Twelve', 10.0: 'Ten', 8.0: 'Eight'}
+# ------------------------------------------------------------ fewest contacts
+dz = ED['designs']
 rows = []
-for key in ('k1_r14', 'k1_r12', 'k1_r10', 'k1_r8'):
-    m = O['curves'][key]['minimal']
-    r = m['radius_mm']
-    n = m['n_contacts']
-    rho = fr[n - 1]
-    bound = O['packing'][str(r)]['size']
-    rows.append((r, n, round(rho, 2), bound))
-    w_ = names[r]
-    mac('minN' + w_, n)
-    mac('minRho' + w_, f(rho, 2))
-    mac('pack' + w_, bound)
-    mac('diskFail' + w_, m['disk_test_failures'])
-table('min_design.dat', ['r', 'n', 'rho', 'bound'], rows)
-table('packing.dat', ['r', 'bound'],
-      sorted((float(r), v['size']) for r, v in O['packing'].items()))
-mac('packNine', O['packing']['9.0']['size'])
+for r in ED['radii_mm']:
+    d1, d2 = dz['k1_r%g' % r], dz['k2_r%g' % r]
+    w_ = RW[r]
+    for k, d in ((1, d1), (2, d2)):
+        tag = ('One' if k == 1 else 'Two') + w_
+        c = d['certificate']
+        mac('minN' + tag, d['n'])
+        mac('minRho' + tag, f(d['rho_mm'], 2))
+        mac('minOneFewer' + tag, f(d['unseen_mm2_one_fewer'], 2))
+        mac('minOff' + tag, d['off_crown'])
+        mac('minDisk' + tag, c['disk_test_failures'])
+        mac('minFaces' + tag, c['faces'])
+        kk = str(k)
+        mac('minShadow' + tag, '(%d, %d)' % tuple(c['shadow'][kk]))
+        mac('minMesh' + tag, '(%d, %d)' % tuple(c['mesh'][kk]))
+    mac('pack' + w_, d1['packing_bound'])
+    rows.append((r, d1['n'], d1['rho_mm'], d2['n'], d2['rho_mm'], d1['packing_bound']))
+table('min_design.dat', ['r', 'n1', 'rho1', 'n2', 'rho2', 'bound'], rows)
+# the share of sites off the crowns, over the designs below the crown floor
+below = [d for d in dz.values() if d['n'] and d['radius_mm'] < cf['rho_C_mm']]
+offp = [100.0 * d['off_crown'] / d['n'] for d in below]
+mac('offCrownPctLo', '%d' % round(min(offp)))
+mac('offCrownPctHi', '%d' % round(max(offp)))
 
 # ------------------------------------------------------------ matched designs
-mrow = {}
-for m in O['matched_comparison']:
-    mrow[(m['array'], m['radius_mm'])] = m
+mrow = {(m['array'], m['radius_mm']): m for m in O['matched_comparison']}
+
+
 def _lab(p):
     return '0' if p == 0 else ('%.2f' % p if p < 0.1 else '%.1f' % p)
 
@@ -125,102 +148,55 @@ table('matched.dat', ['r', 'grid', 'greedy', 'gridlab', 'greedylab'],
         _lab(100 * mrow[('grid_8x8', r)]['uncovered_fraction']),
         _lab(100 * mrow[('greedy', r)]['uncovered_fraction']))
        for r in (8.0, 10.0, 12.0)])
-for r, w_ in ((8.0, 'Eight'), (10.0, 'Ten'), (12.0, 'Twelve')):
+for r in (8.0, 10.0, 12.0):
     g, q = mrow[('grid_8x8', r)], mrow[('greedy', r)]
+    w_ = RW[r]
     mac('gridUnseen' + w_, f(g['uncovered_mm2']))
     mac('gridUnseenPct' + w_, pct(g['uncovered_fraction']))
     mac('gridBetti' + w_, '(%d, %d)' % tuple(g['shadow1']))
-    mac('gridK' + w_, g['certified_level'])
     mac('greedyUnseen' + w_, f(q['uncovered_mm2']))
     mac('greedyUnseenPct' + w_, pct(q['uncovered_fraction'], 2))
-    mac('greedyBetti' + w_, '(%d, %d)' % tuple(q['shadow1']))
-    mac('greedyK' + w_, q['certified_level'])
-    mac('greedyQ' + w_, q['dropout_margin'])
-mac('gridSeenPctEight', pct(1 - mrow[('grid_8x8', 8.0)]['uncovered_fraction'], 0))
 
-# ------------------------------------------------------------ double coverage
-k2c_ = {c['n_contacts']: c for c in O['curves']['k2']}
-d96, d112 = k2c_[96], k2c_[112]
-mac('dblAN', 96)
-mac('dblAR', '10')
-mac('dblAOnce', f(d96['uncovered_area_mm2']['2']))
-mac('dblAK', d96['certified_level'])
-mac('dblBN', 112)
-mac('dblBR', '9')
-mac('dblBOnce', f(d112['uncovered_area_mm2']['2']))
-mac('dblBShadow', '(%d, %d)' % tuple(d112['shadow']['2']))
-mac('dblBMesh', '(%d, %d)' % (d112['mesh']['2']['components'], d112['mesh']['2']['b1']))
-mac('dblBDisk', d112['disk_test_failures'])
-mac('dblBFaces', d112['faces'])
-
-# ------------------------------------------------------------ gyral / sulcal share
-# how many of the free sites of a design are off the gyral crowns
-import numpy as np  # noqa: E402
-D = np.load(ROOT / 'data' / 'colin27_lh_pial.npz')
-sulc = D['sulc']
-free_c = np.array(O['families']['free']['centres'])
-off_pct = []
-for n, w_ in ((66, 'SixtySix'), (112, 'OneTwelve'), (46, 'FortySix')):
-    off = int((sulc[free_c[:n]] >= 0).sum())
-    mac('offCrown' + w_, off)
-    off_pct.append(100.0 * off / n)
-mac('offCrownPctLo', '%d' % round(min(off_pct)))
-mac('offCrownPctHi', '%d' % round(max(off_pct)))
-
-# ------------------------------------------------------------ published grid
+# ------------------------------------------------------------ documented grid
 G = C['grids']['parietal_8x8']
 mac('gridPitch', '%d' % G['pitch_mm'])
 mac('gridEuPitchMedian', f(G['euclidean_pitch_mm']['median'], 2))
-gp = G['geodesic_pitch_mm']
-mac('gridGeoPitchMedian', f(gp['median'], 2))
-mac('gridGeoPitchOver', gp['beyond_limit'])
-mac('gridGeoPitchPairs', gp['within_limit'] + gp['beyond_limit'])
-
-# ------------------------------------------------------------ private territory
-pr = DC['grids']['parietal_8x8']
-rows = []
-for r in DC['radii_mm']:
-    s_ = pr[str(float(r))]['single_summary']
-    rows.append((r, s_['contacts_with_private_territory'], s_['private_area_max_mm2'],
-                 round(100 * s_['worst_single_loss_fraction'], 3)))
-table('private.dat', ['r', 'npriv', 'worst', 'pct'], rows)
-s8 = pr['8.0']['single_summary']
-mac('privCountEight', s8['contacts_with_private_territory'])
-mac('privWorstEight', f(s8['private_area_max_mm2']))
-mac('privMedianEight', f(s8['private_area_median_mm2']))
+mac('gridGeoPitchMedian', f(G['geodesic_pitch_mm']['median'], 2))
+# how many grid contacts lie outside X: a sheet's contacts are not confined to
+# the crowns inside the territory it is meant to cover
+import numpy as np  # noqa: E402
+import run_optimal as R  # noqa: E402  (loads the mesh and the patch X)
+gv = np.array(G['contact_vertices'])
+mac('gridOutsideX', int((~np.isin(gv, R.PVf)).sum()))
 
 # ------------------------------------------------------------ onset-zone capture
 s_mm = S['s_mm']
 Dz = S['designs']
+fw = S['fewest']
+ROLE = {'grid64_r8': 'GridEight', 'grid64_r10': 'GridTen',
+        'crown64_r8': 'CrownEight', 'free64_r8': 'FreeSixtyFour',
+        'free%d_r8' % fw['k1_r8']: 'OneEight', 'free%d_r8' % fw['k2_r8']: 'TwoEight',
+        'free%d_r10' % fw['k1_r10']: 'OneTen', 'free%d_r10' % fw['k2_r10']: 'TwoTen'}
+assert set(ROLE) == set(Dz), (sorted(ROLE), sorted(Dz))
+i5, i10 = s_mm.index(5.0), s_mm.index(10.0)
 for name, rec in Dz.items():
-    table('capture_%s.dat' % name, ['s', 'whole', 'twice', 'missed'],
+    t = ROLE[name]
+    table('capture_%s.dat' % t, ['s', 'whole', 'twice', 'missed'],
           [(s, rec['whole_k1'][i], rec['whole_k2'][i], rec['missed'][i])
            for i, s in enumerate(s_mm)])
-i5, i10 = s_mm.index(5.0), s_mm.index(10.0)
-table('design_rho.dat', ['name', 'n', 'r', 'rho1', 'rho2'],
-      [(k, v['n_contacts'], v['radius_mm'], v['rho1_mm'], v['rho2_mm'])
-       for k, v in Dz.items()])
-tag = dict(grid64_r8='GridEight', crown64_r8='CrownEight', free64_r8='FreeSixtyFour',
-           free66_r8='FreeSixtySix', grid64_r10='GridTen', free46_r10='FreeFortySix',
-           free96_r10='FreeNinetySix', free112_r9='FreeOneTwelve')
-for name, rec in Dz.items():
-    t = tag[name]
+    mac('capN' + t, rec['n_contacts'])
     mac('capWholeFive' + t, pct(rec['whole_k1'][i5]))
     mac('capWholeTen' + t, pct(rec['whole_k1'][i10]))
     mac('capTwiceFive' + t, pct(rec['whole_k2'][i5]))
-    mac('capTwiceTen' + t, pct(rec['whole_k2'][i10]))
     mac('capMissFive' + t, pct(rec['missed'][i5]))
-    mac('capMissTen' + t, pct(rec['missed'][i10]))
     mac('capHidden' + t, f(rec['largest_hidden_s_mm']))
     mac('capRhoOne' + t, f(rec['rho1_mm'], 2))
     mac('capRhoTwo' + t, f(rec['rho2_mm'], 2))
     mac('capUnseen' + t, f(rec['unseen_mm2']['1']))
     mac('capOnce' + t, f(rec['unseen_mm2']['2']))
-# the smallest onset radius the grid can miss whole at r = 8 mm with
-# probability at least one in ten
 g8 = Dz['grid64_r8']
-mac('capGridMissZero', pct(g8['missed'][0]))
 mac('gridHideBound', f(g8['rho1_mm'] - g8['radius_mm'], 2))
+mac('gridRhoRatio', '%d' % round(g8['rho1_mm'] / Dz['free64_r8']['rho1_mm']))
 
 # ------------------------------------------------------------ random dropout
 DR = S['dropout']
@@ -230,20 +206,23 @@ mac('dropQmax', max(qs))
 cols = ['q']
 rows = [[q] for q in qs]
 for name in DR['designs']:
+    t = ROLE[name]
     for s in ('5.0', '10.0'):
-        cols += ['%s_s%s_mean' % (name, s[:-2]), '%s_s%s_p05' % (name, s[:-2])]
+        cols += ['%s_s%s_mean' % (t, s[:-2]), '%s_s%s_p05' % (t, s[:-2])]
         for j, q in enumerate(qs):
             v = DR['designs'][name][str(q)][s]
             rows[j] += [v['mean'], v['p05']]
-table('dropout.dat', cols, rows)
-mac('dropMinFreeOneTwelve',
-    f(100 * min(DR['designs']['free112_r9'][str(q)]['5.0']['mean'] for q in qs), 1))
-for name in DR['designs']:
-    t = tag[name]
     for q, w_ in ((1, 'One'), (4, 'Four'), (8, 'Eight')):
         v = DR['designs'][name][str(q)]['5.0']
         mac('dropMean%s%s' % (w_, t), pct(v['mean']))
         mac('dropLow%s%s' % (w_, t), pct(v['p05']))
+table('dropout.dat', cols, rows)
+# the lowest mean share over all q, for each double-coverage design, s = 5 mm
+for name in DR['designs']:
+    t = ROLE[name]
+    if t.startswith('Two'):
+        mac('dropMin' + t, pct(min(DR['designs'][name][str(q)]['5.0']['mean']
+                                   for q in qs)))
 
 (OUT / 'numbers_ecog.tex').write_text(
     '%% generated by make_ecog_paper_data.py from results/*.json; do not edit\n'

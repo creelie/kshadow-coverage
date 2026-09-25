@@ -110,6 +110,7 @@ run_failure_correlation.py  exploratory: pair correlation of failure, correlatio
 make_signal_figure.py   figures/fig_signal.png
 make_paper_numbers.py   paper/numbers.tex, every number the manuscript quotes
 paper/                  the amsart manuscript
+run_ecog_designs.py     triangle-rule covering radii, designs, crown floor (ECoG paper)
 run_soz_capture.py      onset-zone capture and random-failure analysis (ECoG paper)
 make_ecog_paper_data.py paper/ecog/numbers_ecog.tex and the TikZ plot tables
 paper/ecog/             the ECoG coverage manuscript, TikZ figure sources, PNGs
@@ -198,26 +199,41 @@ states electrode placement for epilepsy surgery as a covering-radius problem
 on the folded cortex: every point of the territory suspected of generating the
 seizures is seen by at least k contacts exactly when the k-th covering radius
 is below the footprint radius, and then every onset zone in the territory is
-seen whole after any k - 1 contacts fail. On the parietal patch above, at an
-8 mm footprint:
+seen whole after any k - 1 contacts fail. On the triangle mesh this stays exact
+when the covering radius is taken over triangles, the distance from a contact
+to a triangle being the distance to its farthest vertex; that is the rule the
+unseen areas above are measured with. On the parietal patch, at an 8 mm
+footprint:
 
 | design | covering radius | patch unseen | 5 mm onset zone seen whole |
 |---|---|---|---|
-| documented 8x8 grid, 64 contacts | 21.57 mm | 2082.0 mm² | 13.4% of positions |
-| 64 crown contacts by covering radius | 14.68 mm | 223.7 mm² | 77.3% |
-| 66 contacts by covering radius | 6.95 mm | 0 | 100% |
+| documented 8x8 grid, 64 contacts | 21.96 mm | 2082.0 mm² | 18.5% of positions |
+| 64 crown contacts | 11.24 mm | 100.5 mm² | 70.5% |
+| 64 contacts by covering radius | 8.12 mm | 1.0 mm² | 98.1% |
+| 66 contacts by covering radius | 7.77 mm | 0 | 100% |
 
-The largest onset zone the grid can miss entirely has a radius of 13.9 mm.
-After 8 random contact failures, the 112-contact double-coverage design at
-9 mm still sees a 5 mm onset zone whole in 99.9% of positions on average; the
-66-contact single-coverage design falls to 74.2%. These are template-brain
-geometry, not patient outcomes; the paper states the protocol that would test
-whether better coverage changes seizure outcome.
+The largest onset zone the grid can miss entirely has a radius of 14.5 mm.
+Counting every gyral crown within reach of the patch, some part of it is
+11.24 mm from its nearest crown, so no crown-only array covers it at a smaller
+footprint radius. Seeing the patch twice takes 132 contacts at 8 mm; after 8
+random contact failures they still see a 5 mm onset zone whole in 99.8% of
+positions on average, where the 66-contact single-coverage design falls to
+78.6%. These are template-brain geometry, not patient outcomes; the paper
+states the protocol that would test whether better coverage changes seizure
+outcome.
+
+Two statements made earlier in this repository are corrected there. The
+fewest contacts covering the patch at 12 mm is 29, not 30 (`run_optimal3.py`
+scans in steps of two). The crown floor of 12.219 mm counts only the crown
+vertices inside the patch; a sheet's contacts are not confined to them (49 of
+the 64 grid contacts lie outside it), and with every crown within reach the
+floor is 10.94 mm on the vertex rule and 11.24 mm on the triangle rule.
 
 Every figure except the cortex render is a TikZ/pgfplots source in
 `paper/ecog/tikz/`, rendered to PNG at 600 dpi:
 
-    python3 run_soz_capture.py        # results/soz_capture.json, ~20 s
+    python3 run_ecog_designs.py       # results/ecog_designs.json, ~5 min
+    python3 run_soz_capture.py        # results/soz_capture.json, ~1 min
     python3 make_ecog_paper_data.py   # macros and plot tables
     cd paper/ecog && ./build.sh       # figures/*.png, then ecog_coverage.pdf
 

@@ -1,5 +1,6 @@
 % fig8_capture.tex -- where an onset zone of radius s can sit in X and still
-% be seen whole, be missed, or be seen twice.  Data: results/soz_capture.json
+% be seen whole, be missed, or be seen twice.  Triangle rule; zones measured
+% between triangle centroids.  Data: results/soz_capture.json
 % (run_soz_capture.py) via make_ecog_paper_data.py.
 \documentclass[tikz,border=4pt]{standalone}
 \input{ecogstyle}
@@ -18,36 +19,38 @@
 \nextgroupplot[ymin=0, ymax=106, ytick={0,20,...,100},
   ylabel={onset-zone positions (\%)},
   title={seen whole ($r=8$\,mm)}]
-  \addplot[cOrange] table[x=s, y expr=100*\thisrow{whole}] {data/capture_grid64_r8.dat};
+  \addplot[cOrange] table[x=s, y expr=100*\thisrow{whole}] {data/capture_GridEight.dat};
   \addlegendentry{$8\times8$ grid, 64}
-  \addplot[cAqua, mk, mark repeat=4] table[x=s, y expr=100*\thisrow{whole}] {data/capture_crown64_r8.dat};
+  \addplot[cAqua, mk, mark repeat=4] table[x=s, y expr=100*\thisrow{whole}] {data/capture_CrownEight.dat};
   \addlegendentry{crown sites, 64}
-  \addplot[cBlue, dash pattern=on 4pt off 2pt] table[x=s, y expr=100*\thisrow{whole}] {data/capture_free64_r8.dat};
+  \addplot[cBlue, dash pattern=on 4pt off 2pt] table[x=s, y expr=100*\thisrow{whole}] {data/capture_FreeSixtyFour.dat};
   \addlegendentry{placed, 64}
-  \addplot[cBlue] table[x=s, y expr=100*\thisrow{whole}] {data/capture_free66_r8.dat};
-  \addlegendentry{placed, 66 ($X\subseteq R_1$)}
+  \addplot[cBlue] table[x=s, y expr=100*\thisrow{whole}] {data/capture_OneEight.dat};
+  \addlegendentry{placed, \capNOneEight{} ($X\subseteq R_1$)}
 % ---------------------------------------------------------------- (b)
-\nextgroupplot[ymin=0, ymax=55, ytick={0,10,...,50},
+\nextgroupplot[ymin=0, ymax=60, ytick={0,10,...,60},
   title={missed entirely}]
-  \addplot[cOrange] table[x=s, y expr=100*\thisrow{missed}] {data/capture_grid64_r8.dat};
+  \addplot[cOrange] table[x=s, y expr=100*\thisrow{missed}] {data/capture_GridEight.dat};
   \addlegendentry{$8\times8$ grid, $r=8$\,mm}
-  \addplot[cOrange, dash pattern=on 4pt off 2pt] table[x=s, y expr=100*\thisrow{missed}] {data/capture_grid64_r10.dat};
+  \addplot[cOrange, dash pattern=on 4pt off 2pt] table[x=s, y expr=100*\thisrow{missed}] {data/capture_GridTen.dat};
   \addlegendentry{$8\times8$ grid, $r=10$\,mm}
-  \addplot[cAqua, mk, mark repeat=4] table[x=s, y expr=100*\thisrow{missed}] {data/capture_crown64_r8.dat};
+  \addplot[cAqua, mk, mark repeat=4] table[x=s, y expr=100*\thisrow{missed}] {data/capture_CrownEight.dat};
   \addlegendentry{crown sites, 64, $r=8$\,mm}
+  \addplot[cBlue, dash pattern=on 4pt off 2pt] table[x=s, y expr=100*\thisrow{missed}] {data/capture_FreeSixtyFour.dat};
+  \addlegendentry{placed, 64, $r=8$\,mm}
   \node[font=\scriptsize, text=cInk2, align=right, anchor=north east]
-    at (rel axis cs:0.97,0.97) {every placed design: $0$};
+    at (rel axis cs:0.97,0.97) {designs with $X\subseteq R_1$: $0$};
 % ---------------------------------------------------------------- (c)
 \nextgroupplot[ymin=0, ymax=106, ytick={0,20,...,100},
   title={seen twice}]
-  \addplot[cBlue] table[x=s, y expr=100*\thisrow{twice}] {data/capture_free66_r8.dat};
-  \addlegendentry{placed, 66, $r=8$\,mm}
-  \addplot[cBlue, dash pattern=on 4pt off 2pt] table[x=s, y expr=100*\thisrow{twice}] {data/capture_free46_r10.dat};
-  \addlegendentry{placed, 46, $r=10$\,mm}
-  \addplot[cViolet, dash pattern=on 4pt off 2pt] table[x=s, y expr=100*\thisrow{twice}] {data/capture_free96_r10.dat};
-  \addlegendentry{placed, 96, $r=10$\,mm}
-  \addplot[cViolet, mksq, mark repeat=5] table[x=s, y expr=100*\thisrow{twice}] {data/capture_free112_r9.dat};
-  \addlegendentry{placed, 112, $r=9$\,mm}
+  \addplot[cBlue] table[x=s, y expr=100*\thisrow{twice}] {data/capture_OneEight.dat};
+  \addlegendentry{placed, \capNOneEight, $r=8$\,mm ($k=1$)}
+  \addplot[cBlue, dash pattern=on 4pt off 2pt] table[x=s, y expr=100*\thisrow{twice}] {data/capture_OneTen.dat};
+  \addlegendentry{placed, \capNOneTen, $r=10$\,mm ($k=1$)}
+  \addplot[cViolet, mksq, mark repeat=5] table[x=s, y expr=100*\thisrow{twice}] {data/capture_TwoEight.dat};
+  \addlegendentry{placed, \capNTwoEight, $r=8$\,mm ($k=2$)}
+  \addplot[cViolet, dash pattern=on 4pt off 2pt] table[x=s, y expr=100*\thisrow{twice}] {data/capture_TwoTen.dat};
+  \addlegendentry{placed, \capNTwoTen, $r=10$\,mm ($k=2$)}
 \end{groupplot}
 \node[panellabel] at ($(group c1r1.north west)+(-1.15,0.62)$) {(a)};
 \node[panellabel] at ($(group c2r1.north west)+(-0.95,0.62)$) {(b)};
