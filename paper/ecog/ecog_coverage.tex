@@ -15,6 +15,13 @@
 \graphicspath{{figures/}}
 
 \input{numbers_ecog.tex}
+% The code release and its Zenodo archive, quoted in the Acknowledgements and
+% Code availability.  Update both when the release carrying this paper is
+% tagged and archived.
+\newcommand{\codeRepo}{\url{https://github.com/creelie/kshadow-coverage}}
+\newcommand{\codeRelease}{v1.4.0}
+\newcommand{\zenodoDOI}{10.5281/zenodo.22822523}
+\newcommand{\zenodoRelease}{v1.2.0}
 \input{tikz/data/fold_numbers.tex}
 
 \newtheorem{theorem}{Theorem}
@@ -752,11 +759,23 @@ below.
 
 \section*{Code availability}
 \begin{sloppypar}
-All code, result files and figure sources are in the repository
-\url{https://github.com/creelie/kshadow-coverage}~\cite{kshadowcode}. This
-manuscript is \texttt{paper/ecog/ecog\_coverage.tex}, built by
+All code, result files and figure sources are in the GitHub repository
+\codeRepo~\cite{kshadowcode}. The designs and certificates are those of
+release \codeRelease; \texttt{run\_soz\_capture.py} and the figure sources of
+this paper are added after it.
+The repository is archived on Zenodo, release \zenodoRelease{} at
+\href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}. This manuscript is
+\texttt{paper/ecog/ecog\_coverage.tex}, built by
 \texttt{paper/ecog/build.sh}. Every number in it is a macro generated from the
 result files.
+\end{sloppypar}
+
+\section*{Acknowledgements}
+\begin{sloppypar}
+The Python computations of this paper were carried out with the assistance of
+Claude (Anthropic), using the code in the GitHub repository
+\codeRepo{} (building on release \codeRelease; Zenodo archive
+\href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}, release \zenodoRelease).
 \end{sloppypar}
 
 \section*{Author contributions}
@@ -766,13 +785,11 @@ U.B.~\cite{BhattacharjeeBhattacharya2026}. A.B.\ extended it to electrode
 arrays on the cortex. D.B., U.B.\ and A.B.\ wrote the code and carried out
 the analyses together, and all three authors wrote the paper.
 
-\section*{Use of AI tools}
-Drafting of this manuscript, of its TikZ figures and of the analysis script
-\texttt{run\_soz\_capture.py} was assisted by an AI system (Claude, Anthropic).
-The authors are responsible for the content.
+\section*{Funding}
+None.
 
 \section*{Competing interests}
-The authors declare no competing interests.
+None.
 
 \bibliographystyle{amsplain}
 \bibliography{refs_ecog}
