@@ -183,8 +183,8 @@ is classical in sensor networks~\cite{HuangTseng2005}, its topology can be read
 from the nerve of the footprints~\cite{Borsuk1948,deSilvaGhrist2007}, and the
 $k$-fold region from the multicover nerve~\cite{Sheehy2012}; the certificate
 used here as a check follows~\cite{BhattacharjeeBhattacharya2026}. The
-placement rule is farthest-point sampling, the greedy algorithm for the
-$k$-centre problem~\cite{Gonzalez1985,HochbaumShmoys1985}. What is new is the
+placement rule for unrestricted sites is farthest-point sampling, the greedy
+algorithm for the $k$-centre problem~\cite{Gonzalez1985,HochbaumShmoys1985}. What is new is the
 statement of ECoG placement as a covering-radius problem on the folded
 surface, the site floor that it implies for subdural sheets, and the
 onset-zone capture and failure analysis of designed arrays.
@@ -441,9 +441,10 @@ Proposition~\ref{prop:greedy} says the placement rule we use loses at most a
 factor two in radius, up to one mesh edge, against any placement with the same
 number of contacts. On a surface the count scales like the inverse square of
 the radius, so the factor two in radius becomes about four in contact count.
-The guarantee is for single coverage with sites anywhere on $X$; for $k\ge2$,
-and for restricted sites, the same rule is a heuristic, and its designs are
-checked by Proposition~\ref{prop:cover} rather than bounded in advance.
+The guarantee is for single coverage with sites anywhere on $X$. For $k\ge2$
+the same rule, and for sites restricted to $C$ the worst-triangle rule of
+Section~\ref{sec:design}, are heuristics, and their designs are checked by
+Proposition~\ref{prop:cover} rather than bounded in advance.
 
 \begin{figure}[t]
 \centering
@@ -556,7 +557,7 @@ $\crownFloorInside$\,mm.) A crown-only sequence, which at each step adds the
 crown site closest to the worst covered triangle, reaches the floor at
 $n=\crownFlatN$ and stays there (Fig.~\ref{fig:covering}). By
 Proposition~\ref{prop:sitefloor}, no array with its contacts on the crowns
-sees all of $X$ at a footprint radius of $\crownFloor$\,mm or less, whatever
+sees all of $X$ at a footprint radius at or below this floor, whatever
 its pitch or contact count. With 64 crown contacts at $r=8$\,mm,
 $\capUnseenCrownEight$\,mm$^2$ of $X$ stays unseen.
 

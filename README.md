@@ -43,12 +43,13 @@ separates them is where the contacts sit.
 
 Contacts confined to gyral crowns cannot reach this at any count. Counting
 every gyral crown within 25 mm of the patch (7279 crown vertices), some point
-of the patch is 10.94 mm from its nearest crown, and on the triangle rule some
-triangle has no crown within 11.24 mm of all three of its vertices, so no
-crown-only array covers the patch at a footprint radius of 11.24 mm or less,
-at any contact count. (Counting only the 3016 gyral vertices inside the patch
-gives 12.219 mm, the figure in `paper/kshadow_natphys.tex`; a sheet's contacts
-are not confined to those.)
+of the patch is 10.94 mm from its nearest crown; on the triangle rule, where a
+triangle counts as seen only when one contact is within the footprint radius
+of all three of its vertices, the crown floor is 11.24 mm. No crown-only array
+covers the patch at a footprint radius at or below that floor, at any contact
+count. (Counting only the 3016 gyral vertices inside the patch gives 12.219
+mm, the figure in `paper/kshadow_natphys.tex`; a sheet's contacts are not
+confined to those.)
 
 112 contacts at a 9 mm radius see every point of the patch twice, by direct
 computation on the mesh. The certificate gives Δ₁(N) and Δ₂(N) both (1, 0),
@@ -217,14 +218,14 @@ footprint:
 | 66 contacts by covering radius | 7.77 mm | 0 | 100% |
 
 The largest onset zone the grid can miss entirely has a radius of 14.5 mm.
-Counting every gyral crown within reach of the patch, some part of it is
-11.24 mm from its nearest crown, so no crown-only array covers it at a smaller
-footprint radius. Seeing the patch twice takes 132 contacts at 8 mm; after 8
-random contact failures they still see a 5 mm onset zone whole in 99.8% of
-positions on average, where the 66-contact single-coverage design falls to
-78.6%. These are template-brain geometry, not patient outcomes; the paper
-states the protocol that would test whether better coverage changes seizure
-outcome.
+Counting every gyral crown within reach of the patch, some part of it is 11.24
+mm from its nearest crown (triangle rule), so no crown-only array covers it at
+a footprint radius at or below that floor. Seeing the patch twice takes 132
+contacts at 8 mm; after 8 random contact failures they still see a 5 mm onset
+zone whole in 99.8% of positions on average, where the 66-contact
+single-coverage design falls to 78.6%. These are template-brain geometry, not
+patient outcomes; the paper states the protocol that would test whether better
+coverage changes seizure outcome.
 
 Two statements made earlier in this repository are corrected there. The
 fewest contacts covering the patch at 12 mm is 29, not 30 (`run_optimal3.py`
