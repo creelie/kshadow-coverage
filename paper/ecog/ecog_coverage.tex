@@ -187,7 +187,9 @@ placement rule for unrestricted sites is farthest-point sampling, the greedy
 algorithm for the $k$-centre problem~\cite{Gonzalez1985,HochbaumShmoys1985}. What is new is the
 statement of ECoG placement as a covering-radius problem on the folded
 surface, the site floor that it implies for subdural sheets, and the
-onset-zone capture and failure analysis of designed arrays.
+onset-zone capture and failure analysis of designed arrays. The combinatorial
+content of the propositions on the mesh is also proved in the Lean~4 proof
+assistant~\cite{deMouraUllrich2021} (Section~\ref{sec:methods}).
 
 % =====================================================================
 \section{Coverage of a territory, and of an onset zone}\label{sec:model}
@@ -842,6 +844,41 @@ uniformly at random, $\dropDraws$ times for each $q$ with fixed seeds, the
 survivors' footprints are recomputed, and $W_1$ is taken again at $s=5$ and
 $10$\,mm. The analysis is \texttt{run\_soz\_capture.py}, about a minute.
 
+\subsection*{Lean formalization}
+The combinatorial content of the propositions on the mesh is proved in the
+Lean~4 proof assistant~\cite{deMouraUllrich2021}, in the directory
+\texttt{lean/} of the repository (core Lean 4.22.0 without libraries, built
+by \texttt{lake build}). Contacts and triangles are elements of arbitrary
+types, and the distances $e(p,T)$ and $\dd$ are functions to the natural
+numbers, for instance in micrometres. Only their order is used, together with
+the symmetry and triangle inequality of $\dd$ for
+Propositions~\ref{prop:packing} and~\ref{prop:greedy}. The theorems are:
+\begin{itemize}
+\item Proposition~\ref{prop:cover} (\texttt{cover\_iff}): every triangle of
+$X$ lies in at least $k\ge1$ footprints if and only if, for every triangle,
+the $k$-th smallest of its distances $e(p,T)$ is below $r$;
+\item Proposition~\ref{prop:failure} for distinct contacts
+(\texttt{failure\_proof}, \texttt{zone\_failure\_proof});
+\item the equivalence behind Proposition~\ref{prop:erosion} on the mesh: an
+onset zone about a centroid consists of triangles of a given kind exactly when
+every other triangle of $X$ is farther than $s$ from that centroid
+(\texttt{capture\_by\_erosion});
+\item Proposition~\ref{prop:sitefloor}, in its $k$-fold form
+(\texttt{site\_floor}, \texttt{site\_floor\_k});
+\item Proposition~\ref{prop:packing} (\texttt{packing});
+\item the pigeonhole step of Proposition~\ref{prop:greedy}
+(\texttt{farthest\_point\_core});
+\item the per-contact bounds $\dd(v,p)\le e(p,T)\le\dd(v,p)+\ell$ for a
+vertex $v$ of $T$, behind $\rho_k^{\mathrm{v}}\le\rho_k\le
+\rho_k^{\mathrm{v}}+\ell$ (\texttt{le\_triDist}, \texttt{triDist\_le}).
+\end{itemize}
+Every theorem depends only on the standard axioms of Lean (propositional
+extensionality, choice and the soundness of quotients), and no proof is left
+open. Not formalized are the statements on the continuous surface, among them
+the measure argument of Proposition~\ref{prop:erosion}(2) and its lower bound
+on $h(P)$, and the separation property of the farthest-point sequence to which
+the pigeonhole step is applied.
+
 \subsection*{Figures}
 Figures~\ref{fig:pathway}--\ref{fig:algorithm} and
 \ref{fig:covering}--\ref{fig:dropout} are TikZ and pgfplots sources, drawn from
@@ -860,8 +897,8 @@ below.
 All code, result files and figure sources are in the GitHub repository
 \codeRepo~\cite{kshadowcode}. The designs and certificates are those of
 release \codeRelease; \texttt{run\_ecog\_designs.py},
-\texttt{run\_soz\_capture.py} and the figure sources of this paper are added
-after it.
+\texttt{run\_soz\_capture.py}, the Lean formalization in \texttt{lean/} and
+the figure sources of this paper are added after it.
 The repository is archived on Zenodo, release \zenodoRelease{} at
 \href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}. This manuscript is
 \texttt{paper/ecog/ecog\_coverage.tex}, built by
@@ -871,8 +908,9 @@ result files.
 
 \section*{Acknowledgements}
 \begin{sloppypar}
-The Python computations of this paper were carried out with the assistance of
-Claude (Anthropic), using the code in the GitHub repository
+The Python computations and the Lean~4 formalization of this paper were
+carried out with the assistance of Claude (Anthropic). They use the code in
+the GitHub repository
 \codeRepo{} (building on release \codeRelease; Zenodo archive
 \href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}, release \zenodoRelease).
 \end{sloppypar}

@@ -1,0 +1,6 @@
+name = "KShadowECoG"
+version = "0.1.0"
+defaultTargets = ["KShadowECoG"]
+
+[[lean_lib]]
+name = "KShadowECoG"

@@ -267,6 +267,10 @@ k-th covering radius is below r.
 - `paper/ecog/tikz/fig*.tex`  the TikZ/pgfplots sources of Figs. 1-4 and 6-9,
   sharing `ecogstyle.tex`; `paper/ecog/build.sh` renders each to
   `paper/ecog/figures/*.png` at 600 dpi and then builds the PDF.
+- `lean/`  a core Lean 4 project (toolchain `leanprover/lean4:v4.22.0`, no
+  Mathlib) proving the combinatorial content of Propositions 2-7 on the mesh;
+  `lean/README.md` maps each proposition to its theorem and lists what is not
+  formalized. Build with `cd lean && lake build`.
 
 Reproduce:
 
@@ -274,3 +278,4 @@ Reproduce:
     python3 run_soz_capture.py
     python3 make_ecog_paper_data.py
     cd paper/ecog && ./build.sh          # figures, then ecog_coverage.pdf
+    cd lean && lake build                # the Lean proofs

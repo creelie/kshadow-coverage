@@ -119,6 +119,7 @@ run_ecog_designs.py     triangle-rule covering radii, designs, crown floor (ECoG
 run_soz_capture.py      onset-zone capture and random-failure analysis (ECoG paper)
 make_ecog_paper_data.py paper/ecog/numbers_ecog.tex and the TikZ plot tables
 paper/ecog/             the ECoG coverage manuscript, TikZ figure sources, PNGs
+lean/                   Lean 4 proofs of the ECoG paper's propositions on the mesh
 upload_kshadow.sh       one-shot push of this folder to GitHub, then a tag
 upload_kshadow.ps1      the same thing for Windows PowerShell
 ```
@@ -241,6 +242,13 @@ Every figure except the cortex render is a TikZ/pgfplots source in
     python3 run_soz_capture.py        # results/soz_capture.json, ~1 min
     python3 make_ecog_paper_data.py   # macros and plot tables
     cd paper/ecog && ./build.sh       # figures/*.png, then ecog_coverage.pdf
+
+The combinatorial content of the paper's propositions on the mesh (coverage
+as a covering radius, failure-proof sampling, capture by erosion, the site
+floor, the packing bound and the pigeonhole step of the factor-two bound) is
+proved in core Lean 4, in `lean/` (see `lean/README.md`):
+
+    cd lean && lake build             # needs Lean 4.22.0, no Mathlib
 
 ## The cortical surface
 
