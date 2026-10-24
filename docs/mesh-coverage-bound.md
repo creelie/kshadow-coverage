@@ -114,5 +114,5 @@ open/closed equality, exact scale invariance, conservative unresolved results,
 multiple faces and invalid input. Small barycentric samples provide an
 independent numerical sanity check; the proof above establishes the full
 continuum statement. No external datasets or reconstructed signal results
-are changed by this addition. Claude/Codex assistance is not human authorship;
-this addition was prepared with Codex assistance and requires author review.
+are changed by this addition. This addition was prepared with Codex assistance
+for author review; existing preprint author bylines are preserved.
