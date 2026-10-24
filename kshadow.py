@@ -15,48 +15,86 @@ subdivision of N on the vertices {sigma in N : |sigma| >= k}; its simplices
 are chains sigma_1 < sigma_2 < ... under inclusion.
 """
 import itertools
+from decimal import Decimal, localcontext
+from fractions import Fraction
 import numpy as np
 
 
 # --------------------------------------------------------------------------
 # exact planar disk intersection tests (equal radii)
 # --------------------------------------------------------------------------
-def _mec_radius(points):
-    """Radius of the minimum enclosing circle of <= 3 points."""
+def _planar_points(points):
+    """Validate and convert planar coordinates to binary64."""
     pts = np.asarray(points, dtype=float)
-    if len(pts) == 1:
-        return 0.0
-    if len(pts) == 2:
-        return 0.5 * np.linalg.norm(pts[0] - pts[1])
-    a, b, c = pts
-    # try each pair as diameter
-    best = None
-    for p, q, r in ((a, b, c), (a, c, b), (b, c, a)):
-        ctr = 0.5 * (p + q)
-        rad = 0.5 * np.linalg.norm(p - q)
-        if np.linalg.norm(r - ctr) <= rad + 1e-12:
-            best = rad if best is None else min(best, rad)
-    if best is not None:
-        return best
-    # circumcircle
-    ax, ay = a
-    bx, by = b
-    cx, cy = c
-    d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by))
-    if abs(d) < 1e-14:
-        return max(np.linalg.norm(a - b), np.linalg.norm(b - c),
-                   np.linalg.norm(a - c)) / 2
-    ux = ((ax * ax + ay * ay) * (by - cy) + (bx * bx + by * by) * (cy - ay)
-          + (cx * cx + cy * cy) * (ay - by)) / d
-    uy = ((ax * ax + ay * ay) * (cx - bx) + (bx * bx + by * by) * (ax - cx)
-          + (cx * cx + cy * cy) * (bx - ax)) / d
-    return np.linalg.norm(a - np.array([ux, uy]))
+    if pts.ndim == 1 and pts.size == 0:
+        pts = pts.reshape((0, 2))
+    if pts.ndim != 2 or pts.shape[1] != 2 or not np.isfinite(pts).all():
+        raise ValueError("centers must be a finite array of shape (n, 2)")
+    return pts
+
+
+def _rational_points(points):
+    # Fraction(float) represents the supplied binary64 value exactly.
+    return tuple(tuple(Fraction(float(x)) for x in p) for p in points)
+
+
+def _mec_squared(points):
+    """Exact squared enclosing radius for rational planar points."""
+    def distance2(p, q):
+        return (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2
+
+    if len(points) < 2:
+        return Fraction(0)
+    if len(points) == 2:
+        return distance2(*points) / Fraction(4)
+    if len(points) > 3:
+        # A planar enclosing disk is determined by at most three points.
+        return max(_mec_squared(t) for t in itertools.combinations(points, 3))
+    a, b, c = points
+    lengths = (distance2(a, b), distance2(a, c), distance2(b, c))
+    longest = max(lengths)
+    if 2 * longest >= sum(lengths):
+        # Right/obtuse triangles, collinear points and coincidences.
+        return longest / Fraction(4)
+    cross = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+    return Fraction(lengths[0]) * lengths[1] * lengths[2] / (4 * cross ** 2)
+
+
+def _radius_squared(r):
+    value = float(r)
+    if not np.isfinite(value) or value < 0:
+        raise ValueError("radius must be finite and nonnegative")
+    return Fraction(value) ** 2
+
+
+def _mec_radius(points):
+    """Rounded radius; Boolean intersection predicates do not use its rounding.
+
+    Exactness refers to the coordinates after binary64 conversion. Computing
+    the squared radius with rationals avoids absolute geometric tolerances.
+    """
+    squared = _mec_squared(_rational_points(_planar_points(points)))
+    # Squaring a finite large radius can overflow binary64 (and underflow for
+    # small radii). Decimal is used only for this convenience output, never
+    # for the membership decision.
+    with localcontext() as ctx:
+        ctx.prec = 40
+        return float((Decimal(squared.numerator) / Decimal(squared.denominator)).sqrt())
 
 
 def disks_intersect(idx, centers, r, strict=True):
-    """Common point of open (strict) or closed disks of radius r."""
-    rad = _mec_radius(centers[list(idx)])
-    return rad < r if strict else rad <= r
+    """Common point of open (strict) or closed equal-radius disks.
+
+    Comparisons are exact for the binary64 inputs, including tangencies.
+    Empty families have a common point. More than three disks use Helly.
+    """
+    pts = _planar_points(centers)
+    radius2 = _radius_squared(r)
+    selected = _rational_points(pts[list(idx)])
+    if not selected:
+        return True
+    squared = _mec_squared(selected)
+    return squared < radius2 if strict else squared <= radius2
 
 
 # --------------------------------------------------------------------------
@@ -65,13 +103,19 @@ def disks_intersect(idx, centers, r, strict=True):
 def nerve_of_disks(centers, r, max_size=None):
     """Return the nerve N as a set of frozensets (all faces), using Helly's
     theorem: a set of >= 3 disks has a common point iff every 3 of them do.
-    max_size caps the enumerated face size (None = no cap)."""
-    centers = np.asarray(centers, dtype=float)
+    max_size caps the enumerated face size (None = no cap). The disks are
+    open, r must be positive, and predicates are exact for the coordinates
+    and radius after binary64 conversion."""
+    centers = _planar_points(centers)
+    radius2 = _radius_squared(r)
+    if not radius2:
+        raise ValueError("the nerve of open disks requires a positive radius")
+    exact_centers = _rational_points(centers)
     n = len(centers)
     faces = set(frozenset([i]) for i in range(n))
     adj = {i: set() for i in range(n)}
     for i, j in itertools.combinations(range(n), 2):
-        if np.linalg.norm(centers[i] - centers[j]) < 2 * r:
+        if _mec_squared((exact_centers[i], exact_centers[j])) < radius2:
             faces.add(frozenset([i, j]))
             adj[i].add(j)
             adj[j].add(i)
@@ -81,7 +125,7 @@ def nerve_of_disks(centers, r, max_size=None):
             if j <= i:
                 continue
             for k in adj[i] & adj[j]:
-                if k > j and disks_intersect((i, j, k), centers, r):
+                if k > j and _mec_squared((exact_centers[i], exact_centers[j], exact_centers[k])) < radius2:
                     tri.add(frozenset([i, j, k]))
     faces |= tri
     return HellyNerve(faces, tri, adj, max_size)

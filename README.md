@@ -21,6 +21,13 @@ The theory, in `kshadow.py`:
   R_1 ⊇ R_2 ⊇ ... ;
 - the dropout margin.
 
+The planar equal-disk oracle uses exact rational comparisons of the supplied
+binary64 coordinates and radius, including open/closed tangencies. See
+[`docs/exact-disk-predicates.md`](docs/exact-disk-predicates.md) for the
+squared-radius argument and a scaling counterexample to the former absolute
+tolerances. Run its geometric regression tests with
+`python -m unittest discover -s tests -v` (NumPy is the only test dependency).
+
 The experiments, one script each, all writing JSON into `results/`: five
 planar sensor fields, regular grids with radius and pitch sweeps, anisotropic
 footprints, spherical caps with exact spherical geometry, a real cortical
