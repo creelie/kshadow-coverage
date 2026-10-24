@@ -276,6 +276,15 @@ both (1, 0) while Δ₂ = (1, 25), Δ₃ = (26, 14) and Δ₄ = (74, 0), so the
 certified level is 1 and not 5. `run_grid.py` records both, as `k_certified`
 and `k_highest_hit`.
 
+## A sufficient continuum mesh certificate
+
+For a separate sufficient certificate that covers every point of a target
+triangular mesh, see [the continuum mesh bound](docs/mesh-coverage-bound.md)
+and `mesh_coverage.py`. From valid contact-to-vertex distance upper bounds,
+it checks a proved inequality for whole-face k-coverage and tolerance of
+k-1 contact failures. An unresolved face is not a certified hole. Reproduce
+the regression checks with `python -m unittest discover -s tests -v`.
+
 ## License
 
 MIT for the code. `data/colin27_lh_pial.npz` carries the terms of the
