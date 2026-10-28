@@ -36,7 +36,7 @@
 \DeclareMathOperator{\area}{area}
 \newcommand{\dd}{\mathrm{d}}
 
-\title[Optimal ECoG coverage]{Optimal ECoG Coverage\\for Epilepsy Surgery}
+\title[Certified redundant ECoG coverage]{Redundant ECoG Coverage on Folded Surfaces:\\Design Bounds and Certified Mesh Coverage}
 
 \author{Aditi Bose}
 \address{Centre for Computational Natural Sciences and Bioinformatics,
@@ -63,33 +63,26 @@ electrode placement, covering radius, $k$-fold coverage, nerve theorem}
 \begin{document}
 
 \begin{abstract}
-Resective surgery can free a patient with drug-resistant focal epilepsy from
-seizures. When an intracranial recording guides it, the resection can only be
-planned around what the recording's contacts have seen. We treat the placement
-of the recording contacts as an optimisation problem on the patient's cortical
-surface: every point of the territory suspected of generating the seizures
-should lie within a footprint radius $r$ of at least $k$ contacts, measured
-along the folded surface. This holds exactly when the $k$-th covering radius
-$\rho_k$ of the territory is below $r$, and on a triangulated surface it stays
-exact when the covering radius is taken over triangles. An onset zone of any
-size and position inside the territory is then seen whole, and it stays seen
-whole after any $k-1$ contacts fail. On a $\patchArea$\,mm$^2$ parietal
-territory of the colin27 template brain, the documented $8\times8$ subdural
-grid leaves $\gridUnseenPctEight\%$ of the territory unseen at $r=8$\,mm, and
-an onset zone of radius up to $\capHiddenGridEight$\,mm can lie in it and be
-missed entirely. The same 64 contacts placed by covering radius leave
-$\greedyUnseenEight$\,mm$^2$ unseen, and $\minNOneEight$ contacts leave
-nothing. Contacts confined to the gyral crowns, where a subdural sheet puts
-them, cannot reach this at any contact count: counting every crown within
-reach, some part of the territory is $\crownFloor$\,mm from its nearest crown.
-Covering the territory twice takes $\minNTwoEight$ contacts at $8$\,mm. After
-$\dropQmax$ random contact failures these still see a $5$\,mm onset zone whole
-in $\dropMeanEightTwoEight\%$ of its possible positions on average, where the
-$\minNOneEight$ contacts of single coverage fall to
-$\dropMeanEightOneEight\%$. Complete coverage is what lets a resection planned
-on the recording contain the onset zone by design; it is not sufficient for
-seizure freedom, and this paper reports no patient outcome. We state the
-protocol that would test it.
+Cortical electrode arrays must cover a target despite contact failure and
+surface folding. Under a common-radius footprint model, we formulate this
+requirement through the $k$-th covering radius and prove its equivalence to
+coverage after every set of $k-1$ contact failures. We distinguish coverage
+of sampled vertices, coverage under a finite triangle rule, and coverage of
+every point of the represented piecewise-flat surface. For the last problem,
+we prove the sufficient face test $m+D/\sqrt3<r$, where $m$ is the largest
+vertex $k$-th-distance upper bound and $D$ the longest edge; its universal
+triangle constant is sharp. Valid distance bounds are constructed from
+upward-rounded edge lengths and integer shortest-path sums, and the final
+face comparisons use exact rational arithmetic. On the 3,777\,mm$^2$
+colin27 target, the documented 64-contact grid leaves 55.1\% unseen under
+the existing triangle rule, whereas a stored 66-contact design passes that
+rule at $8$\,mm. The stronger continuous-face test certifies all 9,659 target
+triangles with 80 contacts at $8$\,mm for single coverage and 160 contacts
+at $8$\,mm for double coverage. These are sufficient certificates for stored
+designs, not minimum-contact results. We also analyze site restrictions,
+onset-zone capture and random failures in the finite graph model. The
+certificates depend on the represented geometry and footprint model; no
+patient outcome or anatomical error bound is established.
 \end{abstract}
 
 \maketitle
@@ -332,7 +325,7 @@ Proposition~\ref{prop:erosion} as strict inequalities between finite distances,
 and $W_k(0)=\mu(X\cap R_k)/\mu(X)$ exactly; the lower bound on $h(P)$ is a
 statement about the continuous surface.
 
-The triangle rule is conservative, and the choice matters in practice. The
+The triangle rule is more restrictive than the vertex rule, and the choice matters in practice. The
 vertex covering radius $\rho_k^{\mathrm{v}}(P)=\max_{v\in X}\dd_k(v,P)$, taken
 over the vertices of $X$ alone, satisfies
 \[
@@ -345,6 +338,15 @@ contacts placed by farthest-point sampling have $\rho_1^{\mathrm{v}}=
 \rhoFreeSixtyFourVertex$\,mm but $\rho_1=\rhoFreeSixtyFour$\,mm, and at
 $r=8$\,mm they leave $\greedyUnseenEight$\,mm$^2$ unseen
 (Section~\ref{sec:results}).
+
+The numerical site floors and onset-zone capture quantities below refer
+to this finite graph and triangle-rule model. Edge-graph distances are
+upper bounds on intrinsic surface distances, so a numerical graph site
+floor alone does not prove an obstruction at the same radius for
+continuous intrinsic footprints. The following theorem gives separate
+positive certificates for those footprints.
+
+\input{mesh_certification.tex}
 
 \subsection*{The shape of the covered region}
 Where coverage is not complete, its shape matters. A hole in $R_1$, a pocket of
@@ -381,7 +383,7 @@ around it. Every statement in the panel titles was checked numerically.}
 \end{figure}
 
 % =====================================================================
-\section{Why a subdural sheet cannot reach the folds}\label{sec:floor}
+\section{Site constraints and coverage obstructions}\label{sec:floor}
 % =====================================================================
 
 A subdural grid is a flat sheet laid on the surface of the brain. Its contacts
@@ -898,10 +900,13 @@ All code, result files and figure sources are in the GitHub repository
 \codeRepo~\cite{kshadowcode}. The Python code of this paper
 (\texttt{run\_ecog\_designs.py}, \texttt{run\_soz\_capture.py} and the
 designs and certificates they build on), its result files and its figure
-sources are release \codeRelease, archived on Zenodo at
+sources were introduced in release \codeRelease, archived on Zenodo at
 \href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}. The Lean formalization in
 \texttt{lean/} was added to the repository after that release. This
-manuscript is \texttt{paper/ecog/ecog\_coverage.tex}, built by
+revision additionally includes exact disk predicates, whole-face proofs and
+rigorous path bounds in release v1.6.0 at
+\url{https://github.com/MeBose007/kshadow-coverage/releases/tag/v1.6.0}.
+The manuscript is \texttt{paper/ecog/ecog\_coverage.tex}, built by
 \texttt{paper/ecog/build.sh}. Every number in it is a macro generated from the
 result files.
 \end{sloppypar}
@@ -913,6 +918,12 @@ carried out with the assistance of Claude (Anthropic). They use the code in
 the GitHub repository \codeRepo{}, release \codeRelease{}, archived on Zenodo
 at \href{https://doi.org/\zenodoDOI}{doi:\zenodoDOI}.
 \end{sloppypar}
+
+The v1.6.0 exact-geometry extension, continuous-face proof, integer-path
+audit and manuscript revision were prepared with Codex assistance under
+the direction of Deep Bhattacharjee. The new analytic whole-face theorem
+and path-arithmetic implementation have written proofs and Python checks;
+they are not included in the earlier Lean formalization.
 
 \section*{Author contributions}
 The idea of certifying $k$-fold sensor coverage through iterated nerve
