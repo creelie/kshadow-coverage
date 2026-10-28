@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code, please cite the paper and this archive. Corresponding author: Deep Bhattacharjee (itsdeep@live.com)."
-title: "Supplementary code for: Topological Certificates of Redundant Coverage for Cortical Electrode Arrays"
+title: "Certified Redundant ECoG Coverage: Exact Geometry and Continuous Mesh Certificates"
 type: software
 authors:
   - family-names: Bose
@@ -17,11 +17,10 @@ authors:
     orcid: "https://orcid.org/0009-0002-2254-3914"
     affiliation: "Formerly, National Taiwan University, Taipei 106319, Taiwan"
     email: "rai.bhattacharya.in@gmail.com"
-repository-code: "https://github.com/creelie/kshadow-coverage"
+repository-code: "https://github.com/MeBose007/kshadow-coverage"
 license: MIT
-version: "v1.5.0"
-date-released: "2026-09-25"
-doi: "10.5281/zenodo.22953062"
+version: "v1.6.0"
+date-released: "2026-10-28"
 keywords:
   - nerve theorem
   - persistent homology

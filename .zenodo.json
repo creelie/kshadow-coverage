@@ -1,6 +1,6 @@
 {
-  "title": "Supplementary code for: Topological Certificates of Redundant Coverage for Cortical Electrode Arrays",
-  "description": "Python implementation of the k-shadow certificate and every computation reported in the paper: exact nerves of disk and geodesic footprint families, k-shadow and subdivision complexes with GF(2) Betti numbers, the redundancy barcode, the cortical-surface benchmark on the FieldTrip colin27 template, the optimal-coverage design search, and the analysis of real contact failures on a 64-channel EEG cap (OpenNeuro ds003775 v1.2.1), with an exact arrangement check of the certificate. v1.4.0 adds the pre-specified signal-level test run on all 152 usable recordings (does redundancy predict how well a dropped channel is rebuilt?), exploratory analyses of what it can and cannot say about topology, a margin-preserving null and correlation length for spatially correlated contact failures, a repaired versioned download of the dataset, and the amsart manuscript with every number generated from the result files. v1.5.0 adds the manuscript Optimal ECoG Coverage for Epilepsy Surgery (paper/ecog), which states electrode placement for epilepsy surgery as a covering-radius problem on the folded cortex, with the triangle-rule covering radii, fewest-contact designs, crown site floor, onset-zone capture and random-failure analysis behind it and TikZ sources for its figures. Releases after v1.5.0 also carry a Lean 4 formalization of that paper's propositions on the mesh (lean/).",
+  "title": "Certified Redundant ECoG Coverage: Exact Geometry, Continuous Mesh Certificates and Reproducible Audits",
+  "description": "Python implementation of the k-shadow certificate and every computation reported in the paper: exact nerves of disk and geodesic footprint families, k-shadow and subdivision complexes with GF(2) Betti numbers, the redundancy barcode, the cortical-surface benchmark on the FieldTrip colin27 template, the optimal-coverage design search, and the analysis of real contact failures on a 64-channel EEG cap (OpenNeuro ds003775 v1.2.1), with an exact arrangement check of the certificate. v1.4.0 adds the pre-specified signal-level test run on all 152 usable recordings (does redundancy predict how well a dropped channel is rebuilt?), exploratory analyses of what it can and cannot say about topology, a margin-preserving null and correlation length for spatially correlated contact failures, a repaired versioned download of the dataset, and the amsart manuscript with every number generated from the result files. v1.5.0 adds the manuscript Optimal ECoG Coverage for Epilepsy Surgery (paper/ecog), which states electrode placement for epilepsy surgery as a covering-radius problem on the folded cortex, with the triangle-rule covering radii, fewest-contact designs, crown site floor, onset-zone capture and random-failure analysis behind it and TikZ sources for its figures. Releases after v1.5.0 also carry a Lean 4 formalization of that paper's propositions on the mesh (lean/). Version 1.6.0 adds exact binary64 disk predicates, a sharp whole-face k-coverage bound, outward dyadic edge lengths and integer Dijkstra distance upper bounds, 17 regression tests, a 70-case audit on the 9659-face colin27 target, and an expanded ECoG manuscript with a vector figure and explicit model scope. The new analytic certificate and path arithmetic are not part of the earlier Lean formalization. All three authors and historical contribution credits are retained. Primary collaborative development is at https://github.com/MeBose007/kshadow-coverage. The identical v1.6.0 release commit is mirrored in the existing creelie/kshadow-coverage archive repository for its Zenodo integration.",
   "upload_type": "software",
   "license": "MIT",
   "creators": [
@@ -30,13 +30,21 @@
     "electrocorticography",
     "epilepsy surgery",
     "covering radius",
-    "Lean 4"
+    "Lean 4",
+    "verified numerics",
+    "continuous mesh coverage",
+    "distance upper bounds"
   ],
   "related_identifiers": [
     {
       "identifier": "10.20944/preprints202606.1351.v2",
       "relation": "references",
       "scheme": "doi"
+    },
+    {
+      "identifier": "https://github.com/MeBose007/kshadow-coverage/releases/tag/v1.6.0",
+      "relation": "references",
+      "scheme": "url"
     }
   ]
 }
