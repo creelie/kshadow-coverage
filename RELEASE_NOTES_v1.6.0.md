@@ -63,3 +63,8 @@ conjecture or journal acceptance is claimed. See `AI_PROVENANCE.md`.
 The earlier v1.5.0 archive remains DOI 10.5281/zenodo.22953062. That DOI
 does not identify this revision. The v1.6.0 DOI is reported in the release
 record after archival has been confirmed.
+
+Archival metadata check: record 22953062 contains a file named
+`creelie/kshadow-coverage-v1.5.0.zip`, while its public version field says
+`v1.4.0`. This release sets an explicit v1.6.0 version in `.zenodo.json`
+and verifies its own archived PDF before reporting the new DOI.
