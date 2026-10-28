@@ -1,5 +1,11 @@
 # Lean 4 formalization
 
+The proposition numbers below refer to the v1.5.0 manuscript. The v1.6.0
+whole-face theorem and its uncertainty corollary change later numbering;
+match the statements and Lean theorem names, rather than treating these
+numbers as references to the revised PDF. The continuous-face proof and
+integer path-bound implementation added in v1.6.0 are not Lean-formalized.
+
 Machine-checked proofs of the combinatorial propositions of
 `paper/ecog/ecog_coverage.tex`, on the triangulated surface, in core Lean 4
 (no Mathlib; toolchain `leanprover/lean4:v4.22.0`).

@@ -1,0 +1,25 @@
+{
+  "version": "v1.6.0",
+  "date": "2026-10-28",
+  "authors": [
+    "Aditi Bose",
+    "Deep Bhattacharjee",
+    "Ushashi Bhattacharya"
+  ],
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "geometry_regression_tests": 17,
+  "geometry_regression_status": "PASS",
+  "existing_lean_build": "PASS: leanprover/lean4:v4.22.0",
+  "new_continuous_theorem_lean_formalized": false,
+  "pdf_pages": 19,
+  "latex_status": "PASS: no undefined references, LaTeX warnings or overfull boxes",
+  "audit_cases": 70,
+  "sha256": {
+    "paper/ecog/ecog_coverage.pdf": "69eebc43f0beadd15791865670ffcf6c14efdc4885db1d971fef303b1acd9196",
+    "paper/ecog/mesh_certification.tex": "301f054c5dc801f8ac39cc419a9154016bbd774d3f62de512ded64f0e1c90713",
+    "results/certified_mesh.json": "7092630cbb159f1f5a4c6c400b983a9f6bced4de41c1a23804e42e6b8802810b",
+    "certified_geodesic.py": "406df3ba7151446f0b4dba4cbacd18abd87d0081dbd29062b2ac0e057d74f8a9",
+    "mesh_coverage.py": "4fecde618faf15a1c30e4692e4f8b6fb95f3f82a8644b7426edcf8508b3a4d68",
+    "kshadow.py": "f0b9cbb6d6b4d97798dd4e3e1aba679626d4de794c46146ab76f1bc30b25200a"
+  }
+}

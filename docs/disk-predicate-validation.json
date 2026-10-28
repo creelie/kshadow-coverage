@@ -1,0 +1,77 @@
+{
+  "original_commit": "e49e59b072c97a136633092eefcea0e343c2c59c",
+  "regression_counterexample": {
+    "centers": [
+      [
+        0,
+        0
+      ],
+      [
+        8,
+        0
+      ],
+      [
+        4,
+        7
+      ]
+    ],
+    "radius": 4.4,
+    "true_MEC_radius": "65/14",
+    "previous_false_triangle_at_binary_scales": [
+      -30,
+      -40
+    ]
+  },
+  "corrected_predicate_test_scales": [
+    -900,
+    -40,
+    -30,
+    0,
+    30,
+    900
+  ],
+  "seven_geometric_tests": "PASS",
+  "five_original_planar_fields": [
+    {
+      "field": "A_ring_grid_seed3",
+      "centers": 91,
+      "old_faces_through_triples": 1506,
+      "new_faces_through_triples": 1506,
+      "removed": 0,
+      "added": 0
+    },
+    {
+      "field": "B_ring_grid_seed7",
+      "centers": 91,
+      "old_faces_through_triples": 1515,
+      "new_faces_through_triples": 1515,
+      "removed": 0,
+      "added": 0
+    },
+    {
+      "field": "C_poisson_random",
+      "centers": 95,
+      "old_faces_through_triples": 2391,
+      "new_faces_through_triples": 2391,
+      "removed": 0,
+      "added": 0
+    },
+    {
+      "field": "D_hex_dead_zone",
+      "centers": 79,
+      "old_faces_through_triples": 394,
+      "new_faces_through_triples": 394,
+      "removed": 0,
+      "added": 0
+    },
+    {
+      "field": "E_two_cluster",
+      "centers": 95,
+      "old_faces_through_triples": 26861,
+      "new_faces_through_triples": 26861,
+      "removed": 0,
+      "added": 0
+    }
+  ],
+  "scope": "All stored vertices, edges and triangles of the five planar fields match the original oracle. Cortical/geodesic and signal experiments were not rerun; their models are unchanged."
+}

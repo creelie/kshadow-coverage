@@ -4,6 +4,33 @@ Code and cached results for **Topological Certificates of Redundant Coverage
 for Cortical Electrode Arrays**, by Aditi Bose, Deep Bhattacharjee and
 Ushashi Bhattacharya.
 
+## v1.6.0: a certificate for continuous mesh coverage
+
+The revised ECoG manuscript is **Redundant ECoG Coverage on Folded Surfaces:
+Design Bounds and Certified Mesh Coverage**, in
+[`paper/ecog/ecog_coverage.pdf`](paper/ecog/ecog_coverage.pdf).
+It adds a complete whole-face theorem and a rigorous input pipeline:
+`certified_geodesic.py` rounds mesh-edge lengths upward with integer square
+roots, uses integer Dijkstra, and supplies genuine intrinsic-distance upper
+bounds to the exact whole-face test in `mesh_coverage.py`.
+
+The audit certifies every point of all 9,659 represented target triangles
+with 80 contacts at an 8 mm radius (single coverage), and with 160 contacts
+at 8 mm or 128 contacts at 9 mm (double coverage). These are sufficient
+examples among stored designs, not globally minimum counts or clinical
+outcome claims. An unresolved face is not a certified hole. All three
+authors are retained; see `AI_PROVENANCE.md` and `RELEASE_NOTES_v1.6.0.md`.
+
+```
+python -m unittest discover -s tests -v
+python run_certified_mesh.py
+python make_certified_figure.py
+```
+
+The new theorem and path arithmetic have written proofs and regression
+tests; they are outside the scope of the earlier Lean formalization.
+`requirements-certified.txt` records the versions used for this audit.
+
 An electrode array should keep a region of cortex covered after individual
 contacts fail, so what decides its quality is not covered area but the shape
 of the region seen by at least *k* contacts at once. This repository computes
@@ -20,6 +47,13 @@ The theory, in `kshadow.py`:
 - the redundancy barcode, one persistence diagram for the whole filtration
   R_1 ⊇ R_2 ⊇ ... ;
 - the dropout margin.
+
+The planar equal-disk oracle uses exact rational comparisons of the supplied
+binary64 coordinates and radius, including open/closed tangencies. See
+[`docs/exact-disk-predicates.md`](docs/exact-disk-predicates.md) for the
+squared-radius argument and a scaling counterexample to the former absolute
+tolerances. Run its geometric regression tests with
+`python -m unittest discover -s tests -v` (NumPy is the only test dependency).
 
 The experiments, one script each, all writing JSON into `results/`: five
 planar sensor fields, regular grids with radius and pitch sweeps, anisotropic
@@ -275,6 +309,15 @@ property is not monotone in *k*. On the 8×8 grid at pitch 0.8, Δ₁ and Δ₅ 
 both (1, 0) while Δ₂ = (1, 25), Δ₃ = (26, 14) and Δ₄ = (74, 0), so the
 certified level is 1 and not 5. `run_grid.py` records both, as `k_certified`
 and `k_highest_hit`.
+
+## A sufficient continuum mesh certificate
+
+For a separate sufficient certificate that covers every point of a target
+triangular mesh, see [the continuum mesh bound](docs/mesh-coverage-bound.md)
+and `mesh_coverage.py`. From valid contact-to-vertex distance upper bounds,
+it checks a proved inequality for whole-face k-coverage and tolerance of
+k-1 contact failures. An unresolved face is not a certified hole. Reproduce
+the regression checks with `python -m unittest discover -s tests -v`.
 
 ## License
 
